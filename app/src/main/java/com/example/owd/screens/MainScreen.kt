@@ -28,19 +28,27 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.owd.R
 import com.example.owd.data.Group
+import com.example.owd.navigation.NavDest
+
+object HomeDestination : NavDest{
+    override val route = "home"
+    override val screenTitle = R.string.groups
+}
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeBody() {
+fun MainScreen(navigateToAddGroup: () -> Unit, navigateToGroupDetails: () -> Unit) {
     Scaffold (
         topBar = { CenterAlignedTopAppBar(title = {
             Text(
-                text = "Top app bar",
+                text = stringResource(R.string.groups),
                 style = MaterialTheme.typography.titleLarge,
                 fontSize = 30.sp,
                 fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
@@ -48,7 +56,7 @@ fun HomeBody() {
             )
         }, navigationIcon = {
             TextButton(
-                onClick = { },
+                onClick = {  },
                 modifier = Modifier
                     .padding(10.dp)
                     .size(60.dp)
@@ -60,9 +68,10 @@ fun HomeBody() {
 
         floatingActionButton = {
         SmallFloatingActionButton(
-            onClick = { },
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.secondary,
+            onClick = navigateToAddGroup,
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.primary,
+            shape = MaterialTheme.shapes.large,
             modifier = Modifier
                 .width(70.dp)
                 .height(70.dp)
