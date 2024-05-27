@@ -1,4 +1,4 @@
-package com.example.owd.data
+package com.example.owd.data.groups
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

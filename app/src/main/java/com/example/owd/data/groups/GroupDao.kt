@@ -1,4 +1,4 @@
-package com.example.owd.data
+package com.example.owd.data.groups
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -20,8 +20,8 @@ interface GroupDao {
     suspend fun delete(group: Group)
 
     @Query("SELECT * from groups WHERE id = :id")
-    fun getItem(id: Int): Flow<Group>
+    fun getGroup(id: Int): Flow<Group?>
 
     @Query("SELECT * from groups ORDER BY name ASC")
-    fun getAllItems(): Flow<List<Group>>
+    fun getAllGroups(): Flow<List<Group?>>
 }

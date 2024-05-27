@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
@@ -32,7 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.owd.R
-import com.example.owd.data.Group
+import com.example.owd.data.groups.Group
 import com.example.owd.navigation.NavDest
 
 object HomeDestination : NavDest{
@@ -131,8 +132,10 @@ fun GroupItem(
     group: Group, modifier: Modifier
 ) {
     Card(
+        shape = RoundedCornerShape(10.dp),
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()

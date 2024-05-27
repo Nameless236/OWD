@@ -1,4 +1,4 @@
-package com.example.owd.data
+package com.example.owd.data.persons
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -19,9 +19,9 @@ interface PersonDao {
     @Delete
     suspend fun delete(person: Person)
 
-    @Query("SELECT * from persons WHERE id = :id")
-    fun getPerson(id: Int): Flow<Person>
+    @Query("SELECT * from persons WHERE groupId = :groupId")
+    fun getPerson(groupId: Int): Flow<Person?>
 
     @Query("SELECT * from persons ORDER BY name ASC")
-    fun getAllPersons(): Flow<List<Person>>
+    fun getAllPersons(): Flow<List<Person?>>
 }
