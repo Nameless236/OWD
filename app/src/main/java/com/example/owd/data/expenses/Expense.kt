@@ -7,12 +7,12 @@ import com.example.owd.data.groups.Group
 import com.example.owd.data.persons.Person
 
 @Entity(tableName = "expenses",
-    foreignKeys = [ForeignKey(entity = Group::class, parentColumns = ["id"], childColumns = ["groupId"]), ForeignKey(entity = Person::class, parentColumns = ["id"], childColumns = ["paidBy"])])
+    foreignKeys = [ForeignKey(entity = Group::class, parentColumns = ["id"], childColumns = ["groupId"], onDelete = ForeignKey.CASCADE), ForeignKey(entity = Person::class, parentColumns = ["id"], childColumns = ["paidBy"], onDelete = ForeignKey.CASCADE)])
 data class Expense(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Long = 0,
     val name: String,
     val amount: Double,
-    val groupId: Int,
-    val paidBy: Int
+    val groupId: Long,
+    val paidBy: Long
 )

@@ -1,6 +1,5 @@
 package com.example.owd.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,25 +26,35 @@ import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.owd.AppViewModelProvider
 import com.example.owd.R
 import com.example.owd.data.groups.Group
 import com.example.owd.navigation.NavDest
+import com.example.owd.viewModels.GroupsViewModel
 
-object HomeDestination : NavDest{
-    override val route = "home"
+object GroupsDest : NavDest{
+    override val route = "groups"
     override val screenTitle = R.string.groups
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreen(navigateToAddGroup: () -> Unit, navigateToGroupDetails: () -> Unit) {
+fun MainScreen(navigateToAddGroup: () -> Unit,
+               navigateToGroupDetails: () -> Unit,
+               modifier: Modifier = Modifier,
+               viewModel: GroupsViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+
+    val groupsState by viewModel.groupsUIState.collectAsState()
     Scaffold (
         topBar = { CenterAlignedTopAppBar(title = {
             Text(
@@ -80,28 +89,34 @@ fun MainScreen(navigateToAddGroup: () -> Unit, navigateToGroupDetails: () -> Uni
             Icon(Icons.Filled.Add, "Small floating action button.")
         }
     }){
+        innerPadding ->
+            GroupsBody(groupList = groupsState.groupList, contentPadding = innerPadding, onItemClick = navigateToGroupDetails)
 
-        Column {
+    }
+}
+
+@Composable
+fun GroupsBody(
+    groupList: List<Group>,
+    onItemClick: () -> Unit,
+    contentPadding: PaddingValues
+) {
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        if (groupList.isEmpty()) {
+            Text(
+                text = "No groups found",
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(contentPadding)
+            )
+        } else {
             GroupList(
-                groupList = listOf(
-                    Group(id = 3, name = "Group 2", description = "ewc"),
-                    Group(id = 4, name = "Group 3", description = "ewc"),
-                    Group(id = 5, name = "Group 4", description = "ewc"),
-                    Group(id = 3, name = "Group 2", description = "ewc"),
-                    Group(id = 4, name = "Group 3", description = "ewc"),
-                    Group(id = 5, name = "Group 4", description = "ewc"),
-                    Group(id = 3, name = "Group 2", description = "ewc"),
-                    Group(id = 4, name = "Group 3", description = "ewc"),
-                    Group(id = 5, name = "Group 4", description = "ewc"),
-                    Group(id = 3, name = "Group 2", description = "ewc"),
-                    Group(id = 4, name = "Group 3", description = "ewc"),
-                    Group(id = 5, name = "Group 4", description = "ewc"),
-                    Group(id = 3, name = "Group 2", description = "ewc"),
-                    Group(id = 4, name = "Group 3", description = "ewc"),
-                    Group(id = 5, name = "Group 4", description = "ewc")
-                ),
-                onItemClick = {},
-                contentPadding = it
+                groupList = groupList,
+                onItemClick = onItemClick,
+                contentPadding = contentPadding
             )
         }
     }
@@ -111,7 +126,7 @@ fun MainScreen(navigateToAddGroup: () -> Unit, navigateToGroupDetails: () -> Uni
 @Composable
 fun GroupList(
     groupList: List<Group>,
-    onItemClick: (Group) -> Unit,
+    onItemClick: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
@@ -121,7 +136,7 @@ fun GroupList(
                 group = group,
                 modifier = Modifier
                     .padding(10.dp)
-                    .clickable { }
+                    .clickable { onItemClick }
             )
         }
     }
@@ -129,7 +144,8 @@ fun GroupList(
 
 @Composable
 fun GroupItem(
-    group: Group, modifier: Modifier
+    group: Group,
+    modifier: Modifier
 ) {
     Card(
         shape = RoundedCornerShape(10.dp),

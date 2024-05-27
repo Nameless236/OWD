@@ -18,8 +18,8 @@ interface AppContainer {
 }
 
 class AppDataContainer(private val context: Context) : AppContainer {
-    override val groupsRepository: GroupsRepository = GroupsOfflineRepository(AppDatabase.getDatabase(context).groupDao())
-    override val personsRepository: PersonsRepository = PersonsOfflineRepository(AppDatabase.getDatabase(context).personDao())
-    override val expensesRepository: ExpensesRepository = ExpensesOfflineRepository(AppDatabase.getDatabase(context).expensesDao())
-    override val personExpenseRepository: PersonExpenseRepository = PersonExpenseOfflineRepository(AppDatabase.getDatabase(context).personExpenseDao())
+    override val groupsRepository: GroupsRepository by lazy { GroupsOfflineRepository(AppDatabase.getDatabase(context).groupDao())}
+    override val personsRepository: PersonsRepository by lazy { PersonsOfflineRepository(AppDatabase.getDatabase(context).personDao())}
+    override val expensesRepository: ExpensesRepository by lazy { ExpensesOfflineRepository(AppDatabase.getDatabase(context).expensesDao())}
+    override val personExpenseRepository: PersonExpenseRepository by lazy { PersonExpenseOfflineRepository(AppDatabase.getDatabase(context).personExpenseDao())}
 }

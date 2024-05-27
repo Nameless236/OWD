@@ -8,9 +8,9 @@ import androidx.navigation.compose.composable
 import com.example.owd.screens.AddGroup
 import com.example.owd.screens.AddGroupBackground
 import com.example.owd.screens.Expenses
-import com.example.owd.screens.HomeDestination
+import com.example.owd.screens.ExpensesScreen
+import com.example.owd.screens.GroupsDest
 import com.example.owd.screens.MainScreen
-import com.example.owd.screens.expensesScreen
 
 @Composable
 fun OwdNavHost(
@@ -19,23 +19,26 @@ fun OwdNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Expenses.route,
+        startDestination = GroupsDest.route,
         modifier = modifier
     )
     {
-        composable(route = HomeDestination.route) {
+        composable(route = GroupsDest.route) {
             MainScreen(
-                navigateToAddGroup =
-                { navController.navigate(AddGroup.route) },
-                navigateToGroupDetails =
-                { navController.navigate(AddGroup.route) })
+                navigateToAddGroup = {navController.navigate(AddGroup.route)},
+                navigateToGroupDetails = {}
+            )
         }
         composable(route = AddGroup.route) {
-            AddGroupBackground(modifier = Modifier)
+            AddGroupBackground(
+                navigateBack = {
+                    navController.popBackStack()
+                    navController.navigate(GroupsDest.route)
+                    }
+            )
         }
         composable(route = Expenses.route) {
-            expensesScreen();
+            ExpensesScreen();
         }
-
     }
 }

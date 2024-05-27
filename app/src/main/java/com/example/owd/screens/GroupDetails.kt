@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -35,8 +34,8 @@ object Expenses : NavDest {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 // expensesScreen(group: Group) {
-fun expensesScreen() {
-    val expensesList = listOf(Expense(1, "Ahoj", 25.1, 1, 2), Expense(1, "Ahoj", 25.1, 1, 2), Expense(1, "Ahoj", 25.1, 1, 2))
+fun ExpensesScreen() {
+    //val expensesList = listOf(Expense(1, "Ahoj", 25.1, 1, 2), Expense(1, "Ahoj", 25.1, 1, 2), Expense(1, "Ahoj", 25.1, 1, 2))
     Scaffold(
         topBar = {
             Column(modifier = Modifier.fillMaxWidth()) {
@@ -74,9 +73,9 @@ fun expensesScreen() {
         }
     ) {
         LazyColumn (contentPadding = it) {
-            items(expensesList) { expense ->
-                DisplayExpenses(expense)
-            }
+//            items(expensesList) { expense ->
+//                DisplayExpenses(expense)
+//            }
         }
     }
 }

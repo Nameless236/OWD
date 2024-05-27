@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface GroupDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(group: Group)
+    suspend fun insert(group: Group) : Long
 
     @Update
     suspend fun update(group: Group)
@@ -23,5 +23,5 @@ interface GroupDao {
     fun getGroup(id: Int): Flow<Group?>
 
     @Query("SELECT * from groups ORDER BY name ASC")
-    fun getAllGroups(): Flow<List<Group?>>
+    fun getAllGroups(): Flow<List<Group>>
 }

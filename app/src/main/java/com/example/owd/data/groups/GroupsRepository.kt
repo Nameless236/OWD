@@ -3,7 +3,7 @@ package com.example.owd.data.groups
 import kotlinx.coroutines.flow.Flow
 
 interface GroupsRepository {
-    suspend fun insert(group: Group)
+    suspend fun insert(group: Group) : Long
 
     suspend fun update(group: Group)
 
@@ -11,5 +11,5 @@ interface GroupsRepository {
 
     fun getGroup(id: Int): Flow<Group?>
 
-    fun getAllGroups(): Flow<List<Group?>>
+    fun getAllGroups(): Flow<List<Group>>
 }
