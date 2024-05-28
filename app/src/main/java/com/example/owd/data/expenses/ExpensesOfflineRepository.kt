@@ -9,6 +9,6 @@ class ExpensesOfflineRepository(private val expensesDao: ExpensesDao): ExpensesR
 
     override suspend fun delete(expense: Expense) = expensesDao.delete(expense)
 
-    override fun getAllExpenses(groupId: Int): Flow<Expense?> = expensesDao.getAllExpenses(groupId)
+    override fun getAllExpenses(groupId: Int): Flow<List<Expense>> = expensesDao.getAllExpenses(groupId)
 
 }

@@ -11,7 +11,7 @@ class GroupsOfflineRepository(private val groupDao: GroupDao) : GroupsRepository
 
     override suspend fun delete(group: Group) = groupDao.delete(group)
 
-    override fun getGroup(id: Int): Flow<Group?> = groupDao.getGroup(id)
+    override fun getGroup(id: Int): Flow<Group> = groupDao.getGroup(id)
 
     override fun getAllGroups(): Flow<List<Group>> = groupDao.getAllGroups()
 }

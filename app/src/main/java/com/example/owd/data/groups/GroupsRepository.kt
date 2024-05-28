@@ -9,7 +9,7 @@ interface GroupsRepository {
 
     suspend fun delete(group: Group)
 
-    fun getGroup(id: Int): Flow<Group?>
+    fun getGroup(id: Int): Flow<Group>
 
     fun getAllGroups(): Flow<List<Group>>
 }

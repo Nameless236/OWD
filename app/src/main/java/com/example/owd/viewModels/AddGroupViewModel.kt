@@ -13,7 +13,7 @@ class AddGroupViewModel(
     private val groupsRepository: GroupsRepository,
     private val personsRepository: PersonsRepository) : ViewModel()
 {
-    var groupUIState by mutableStateOf(GroupDetailsUiState())
+    var groupUIState by mutableStateOf(NewGroupUiState())
         private set
 
     var newMemberName by mutableStateOf("")
@@ -22,15 +22,17 @@ class AddGroupViewModel(
      * a validation for input values.
      */
     suspend fun saveItem() {
-        val id = groupsRepository.insert(groupUIState.groupDetails.toItem())
-        for (member in groupUIState.groupDetails.members) {
-            personsRepository.insert(Person(name = member, groupId = id))
+        if (validateInput(groupUIState.groupDetails)) {
+            val id = groupsRepository.insert(groupUIState.groupDetails.toItem())
+            for (member in groupUIState.groupDetails.members) {
+                personsRepository.insert(Person(name = member, groupId = id))
+            }
         }
     }
 
     fun updateUiState(groupDetails: GroupDetails) {
         groupUIState =
-            GroupDetailsUiState(groupDetails = groupDetails, isEntryValid = validateInput(groupDetails))
+            NewGroupUiState(groupDetails = groupDetails, isEntryValid = validateInput(groupDetails))
     }
 
     private fun validateInput(uiState: GroupDetails = groupUIState.groupDetails): Boolean {
@@ -63,7 +65,7 @@ class AddGroupViewModel(
     }
 }
 
-data class GroupDetailsUiState(
+data class NewGroupUiState(
     val groupDetails: GroupDetails = GroupDetails(),
     val isEntryValid: Boolean = false
 )
@@ -81,7 +83,7 @@ fun GroupDetails.toItem(): Group = Group (
     description = description
 )
 
-fun Group.toGroupUiState(isEntryValid: Boolean = false): GroupDetailsUiState = GroupDetailsUiState(
+fun Group.toGroupUiState(isEntryValid: Boolean = false): NewGroupUiState = NewGroupUiState(
     groupDetails = this.toItemDetails(),
     isEntryValid = isEntryValid
 )

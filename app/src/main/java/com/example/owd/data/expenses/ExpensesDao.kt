@@ -19,5 +19,5 @@ interface ExpensesDao {
     suspend fun delete(expense: Expense)
 
     @Query("SELECT * from expenses WHERE groupId = :groupId")
-    fun getAllExpenses(groupId: Int): Flow<Expense?>
+    fun getAllExpenses(groupId: Int): Flow<List<Expense>>
 }

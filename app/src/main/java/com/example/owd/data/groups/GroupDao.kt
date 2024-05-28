@@ -20,7 +20,7 @@ interface GroupDao {
     suspend fun delete(group: Group)
 
     @Query("SELECT * from groups WHERE id = :id")
-    fun getGroup(id: Int): Flow<Group?>
+    fun getGroup(id: Int): Flow<Group>
 
     @Query("SELECT * from groups ORDER BY name ASC")
     fun getAllGroups(): Flow<List<Group>>

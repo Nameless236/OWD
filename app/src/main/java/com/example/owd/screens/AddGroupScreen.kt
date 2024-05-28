@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
@@ -48,115 +50,115 @@ object AddGroup : NavDest {
     override val screenTitle = R.string.add_group
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddGroupBackground(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: AddGroupViewModel = viewModel(factory = AppViewModelProvider.Factory))
-{
+    viewModel: AddGroupViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
     val coroutineScope = rememberCoroutineScope()
-        Scaffold(
-            topBar = {
-                CenterAlignedTopAppBar(title = {
-                    Text(
-                        text = stringResource(id = R.string.add_group),
-                        modifier = Modifier.padding(20.dp),
-                        fontSize = 40.sp,
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.headlineLarge
-                    )
-                })
-            }, modifier = Modifier.fillMaxWidth(),
-            floatingActionButton = {
-                SmallFloatingActionButton(
-                    onClick = {
-                        coroutineScope.launch {
-                            viewModel.saveItem()
-                            navigateBack()
-                        }
-
-                    },
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.primary,
-                    shape = MaterialTheme.shapes.large,
-                    modifier = Modifier
-                        .width(70.dp)
-                        .height(70.dp)
-                ) {
-                    Icon(Icons.Filled.Add, "Small floating action button.")
-                }
-            }
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(it.calculateTopPadding())
-                    .scrollable(rememberScrollState(), orientation = Orientation.Vertical)
-            ) {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(title = {
                 Text(
-                    text = "Group name",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                    modifier = Modifier.padding(10.dp)
+                    text = stringResource(id = R.string.add_group),
+                    modifier = Modifier.padding(20.dp),
+                    fontSize = 40.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.headlineLarge
                 )
-                TextField(
-                    value = viewModel.groupUIState.groupDetails.name,
-                    onValueChange = { viewModel.updateName(it) },
-                    modifier = Modifier
-                        .padding(bottom = 10.dp)
-                        .fillMaxWidth(),
-                    label = { Text("Group Name") })
-
-                Text(
-                    text = "Group description",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                    modifier = Modifier.padding(10.dp)
-                )
-
-                TextField(
-                    value = viewModel.groupUIState.groupDetails.description,
-                    onValueChange = { viewModel.updateDescription(it) },
-                    modifier = Modifier
-                        .padding(bottom = 10.dp)
-                        .fillMaxWidth(),
-                    label = { Text("Group Description") })
-
-                Text(
-                    text = "Members",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                    modifier = Modifier.padding(10.dp)
-                )
-                LazyColumn {
-                    items(viewModel.groupUIState.groupDetails.members) { member ->
-                        Members(member)
+            })
+        }, modifier = Modifier.fillMaxWidth(),
+        floatingActionButton = {
+            SmallFloatingActionButton(
+                onClick = {
+                    coroutineScope.launch {
+                        viewModel.saveItem()
+                        navigateBack()
                     }
-                    item {
-                        Card(modifier = Modifier, shape = RectangleShape) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.CenterHorizontally)
-                            ) {
-                                Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                                    TextField(
-                                        value = viewModel.newMemberName,
-                                        onValueChange = { viewModel.newMemberName = it },
-                                        modifier = Modifier
-                                            .padding(bottom = 10.dp)
-                                            .fillMaxWidth(0.8f),
-                                        label = { Text("Add member") })
-                                    IconButton(onClick = {
-                                        viewModel.addMember()
-                                    }) {
-                                        Icon(Icons.Filled.Add, "Add member")
-                                    }
+
+                },
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.primary,
+                shape = CircleShape,
+
+                modifier = Modifier
+                    .width(70.dp)
+                    .height(70.dp)
+            ) {
+                Icon(Icons.Filled.Check, "Small floating action button.")
+            }
+        }
+    ) {innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .scrollable(rememberScrollState(), orientation = Orientation.Vertical)
+        ) {
+            Text(
+                text = "Group name",
+                style = MaterialTheme.typography.headlineSmall,
+                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
+                modifier = Modifier.padding(10.dp)
+            )
+            TextField(
+                value = viewModel.groupUIState.groupDetails.name,
+                onValueChange = { viewModel.updateName(it) },
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+                    .fillMaxWidth(),
+                label = { Text("Group Name") })
+
+            Text(
+                text = "Group description",
+                style = MaterialTheme.typography.headlineSmall,
+                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
+                modifier = Modifier.padding(10.dp)
+            )
+
+            TextField(
+                value = viewModel.groupUIState.groupDetails.description,
+                onValueChange = { viewModel.updateDescription(it) },
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+                    .fillMaxWidth(),
+                label = { Text("Group Description") })
+
+            Text(
+                text = "Members",
+                style = MaterialTheme.typography.headlineSmall,
+                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
+                modifier = Modifier.padding(10.dp)
+            )
+            LazyColumn {
+                items(viewModel.groupUIState.groupDetails.members) { member ->
+                    Members(member)
+                }
+                item {
+                    Card(modifier = Modifier, shape = RectangleShape) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.CenterHorizontally)
+                        ) {
+                            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                                TextField(
+                                    value = viewModel.newMemberName,
+                                    onValueChange = { viewModel.newMemberName = it },
+                                    modifier = Modifier
+                                        .padding(bottom = 10.dp)
+                                        .fillMaxWidth(0.8f),
+                                    label = { Text("Add member") })
+                                IconButton(onClick = {
+                                    viewModel.addMember()
+                                }) {
+                                    Icon(Icons.Filled.Add, "Add member")
                                 }
                             }
                         }
                     }
+                }
 
             }
         }
@@ -164,13 +166,14 @@ fun AddGroupBackground(
 }
 
 @Composable
-fun Members(member: String)
-{
+fun Members(member: String) {
     var checked by remember { mutableStateOf(true) }
-    Card (modifier = Modifier, shape = RectangleShape) {
-        Column (modifier = Modifier
-            .fillMaxWidth()
-            .align(Alignment.CenterHorizontally)) {
+    Card(modifier = Modifier, shape = RectangleShape) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+        ) {
             Row(modifier = Modifier) {
                 Text(
                     text = member,

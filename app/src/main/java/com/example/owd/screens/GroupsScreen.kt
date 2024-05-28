@@ -30,7 +30,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,7 +49,7 @@ object GroupsDest : NavDest{
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navigateToAddGroup: () -> Unit,
-               navigateToGroupDetails: () -> Unit,
+               navigateToGroupDetails: (Long) -> Unit,
                modifier: Modifier = Modifier,
                viewModel: GroupsViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
 
@@ -58,10 +57,12 @@ fun MainScreen(navigateToAddGroup: () -> Unit,
     Scaffold (
         topBar = { CenterAlignedTopAppBar(title = {
             Text(
-                text = stringResource(R.string.groups),
-                style = MaterialTheme.typography.titleLarge,
-                fontSize = 30.sp,
-                fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
+                text = "Groups",
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = MaterialTheme.typography.headlineLarge.fontWeight,
+                fontSize = 40.sp,
+                fontStyle = MaterialTheme.typography.headlineLarge.fontStyle,
                 modifier = Modifier.padding(20.dp)
             )
         }, navigationIcon = {
@@ -98,7 +99,7 @@ fun MainScreen(navigateToAddGroup: () -> Unit,
 @Composable
 fun GroupsBody(
     groupList: List<Group>,
-    onItemClick: () -> Unit,
+    onItemClick: (Long) -> Unit,
     contentPadding: PaddingValues
 ) {
     Column (
@@ -126,17 +127,17 @@ fun GroupsBody(
 @Composable
 fun GroupList(
     groupList: List<Group>,
-    onItemClick: () -> Unit,
+    onItemClick: (Long) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
     LazyColumn (contentPadding = contentPadding, modifier = modifier){
-        items(groupList) { group ->
+        items(items = groupList, key = { it.id }) { group ->
             GroupItem(
                 group = group,
                 modifier = Modifier
                     .padding(10.dp)
-                    .clickable { onItemClick }
+                    .clickable {onItemClick(group.id)}
             )
         }
     }
