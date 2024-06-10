@@ -61,8 +61,8 @@ fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit)
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(title = {
-                Text(
+            CenterAlignedTopAppBar(
+                title = { Text(
                     text = "Add Expense",
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.headlineLarge,
@@ -71,7 +71,9 @@ fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit)
                     fontStyle = MaterialTheme.typography.headlineLarge.fontStyle,
                     modifier = Modifier.padding(20.dp)
                 )
-            })
+            },
+
+            )
         },
         floatingActionButton = {
             SmallFloatingActionButton(
@@ -90,7 +92,8 @@ fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit)
             ) {
                 Icon(Icons.Filled.Check, "Small floating action button.")
             }
-        }
+        },
+        modifier = Modifier.fillMaxWidth().scrollable(rememberScrollState(), orientation = Orientation.Vertical)
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -127,21 +130,6 @@ fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit)
                 label = { Text("Amount") })
 
             Text(
-                text = "Description",
-                style = MaterialTheme.typography.headlineSmall,
-                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                modifier = Modifier.padding(10.dp)
-            )
-
-            TextField(
-                value = viewModel._addExpenseUiState.expenseDetails.description,
-                onValueChange = { viewModel.updateDescription(it) },
-                modifier = Modifier
-                    .padding(bottom = 10.dp)
-                    .fillMaxWidth(),
-                label = { Text("Expense Description") })
-
-            Text(
                 text = "Paid by",
                 style = MaterialTheme.typography.headlineSmall,
                 fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
@@ -158,9 +146,10 @@ fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit)
                 modifier = Modifier.padding(10.dp)
             )
             LazyColumn {
-                val updatedList = selectedMembers.toMutableList()
                 items(uiState.members) { member ->
-                    Members(member) { isChecked ->
+                    val isSelected = selectedMembers.contains(member)
+                    Members(member, isSelected) { isChecked ->
+                        val updatedList = selectedMembers.toMutableList()
                         if (isChecked) {
                             updatedList.add(member)
                         } else {
@@ -211,8 +200,8 @@ fun MemberSelection(viewModel: GroupDetailsViewModel,members: List<Person>, expa
 }
 
 @Composable
-fun Members(member: Person, onSelectionChange: (Boolean) -> Unit) {
-    var checked by remember { mutableStateOf(true) }
+fun Members(member: Person, isSelected: Boolean, onSelectionChange: (Boolean) -> Unit) {
+    var checked by remember { mutableStateOf(isSelected) }
     Card(modifier = Modifier, shape = RectangleShape) {
         Column(
             modifier = Modifier
@@ -220,16 +209,17 @@ fun Members(member: Person, onSelectionChange: (Boolean) -> Unit) {
                 .align(Alignment.CenterHorizontally)
         ) {
             Row(modifier = Modifier) {
+                Checkbox(checked = checked, onCheckedChange = {
+                    checked = it
+                    onSelectionChange(checked)
+                })
                 Text(
                     text = member.name,
                     modifier = Modifier
                         .padding(10.dp)
                         .fillMaxWidth(0.8f)
                 )
-                Checkbox(checked = checked, onCheckedChange = {
-                    checked = !checked
-                    onSelectionChange(checked)
-                })
+
             }
         }
     }

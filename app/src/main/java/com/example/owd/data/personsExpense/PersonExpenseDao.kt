@@ -22,6 +22,6 @@ interface PersonExpenseDao {
     @Query("SELECT * from persons WHERE id in (SELECT personId from personExpense WHERE expenseId = :expenseId)")
     fun getPersons(expenseId: Int): Flow<List<Person?>>
 
-    @Query("SELECT count(amount) from personExpense WHERE personId = :pId")
+    @Query("SELECT sum(amount) from personExpense WHERE personId = :pId")
     fun getAmmountForPerson(pId: Int): Flow<Float>
 }

@@ -16,7 +16,7 @@ import com.example.owd.screens.AddExpenseDest
 import com.example.owd.screens.AddExpenseScreen
 import com.example.owd.screens.AddGroup
 import com.example.owd.screens.AddGroupBackground
-import com.example.owd.screens.ExpensesScreen
+import com.example.owd.screens.GroupDetailScreen
 import com.example.owd.screens.GroupDetailsDest
 import com.example.owd.screens.GroupsDest
 import com.example.owd.screens.MainScreen
@@ -49,14 +49,6 @@ fun OwdNavHost(
                     }
             )
         }
-//        composable(route = GroupDetailsDest.route) {
-//            val groupsViewModel: GroupDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
-//            groupsViewModel.setGroupId(it.arguments?.getLong("groupId") ?: 0L)
-//            ExpensesScreen(
-//                navigateToAddExpense = {navController.navigate(AddExpense.route)},
-//                groupsViewModel
-//            )
-//        }
 
         composable(
             route = GroupDetailsDest.routeWithArgs,
@@ -73,21 +65,14 @@ fun OwdNavHost(
                 }
             }
 
-            ExpensesScreen(
-                navigateToAddExpense = {
-                    navController.navigate(AddExpenseDest.route)
-                                       },
+            GroupDetailScreen(
+                navigateToAddExpense = { navController.navigate(AddExpenseDest.route) },
+                navigateToHome = {
+                    navController.popBackStack()
+                    navController.navigate(GroupsDest.route)
+                                 },
                 groupsViewModel)
         }
-
-//        composable(
-//            route = AddExpense.route
-//        ) {
-//            val groupId = it.arguments?.getLong("groupId") ?: 0L
-//            val groupsViewModel: GroupDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
-//            groupsViewModel.setGroupId(groupId)
-//            AddExpenseScreen(groupsViewModel)
-//        }
 
         composable(
             route = AddExpenseDest.route

@@ -1,7 +1,6 @@
 package com.example.owd
 
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -22,7 +21,6 @@ object AppViewModelProvider {
 
         initializer {
             GroupDetailsViewModel(
-                savedStateHandle = this.createSavedStateHandle(),
                 groupsRepository = owdApplication().container.groupsRepository,
                 expenseRepository = owdApplication().container.expensesRepository,
                 personExpenseRepository = owdApplication().container.personExpenseRepository,
