@@ -43,7 +43,6 @@ class AddGroupViewModel(
 
 
     fun addMember() {
-        //val newMember = Person(name = newMemberName, groupId = groupUIState.groupDetails.id)
         groupUIState = groupUIState.copy(
             groupDetails = groupUIState.groupDetails.copy(
                 members = groupUIState.groupDetails.members + newMemberName
@@ -88,9 +87,6 @@ fun Group.toGroupUiState(isEntryValid: Boolean = false): NewGroupUiState = NewGr
     isEntryValid = isEntryValid
 )
 
-/**
- * Extension function to convert [Item] to [ItemDetails]
- */
 fun Group.toItemDetails(): GroupDetails = GroupDetails(
     id = id,
     name = name,

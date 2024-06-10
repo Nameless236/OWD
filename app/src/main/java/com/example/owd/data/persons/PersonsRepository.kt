@@ -12,4 +12,5 @@ interface PersonsRepository {
     fun getPerson(groupId: Int): Flow<Person?>
 
     fun getAllPersons(): Flow<List<Person?>>
+    fun getPersonsGroup(groupId: Int): Flow<List<Person>>
 }

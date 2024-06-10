@@ -24,4 +24,7 @@ interface PersonDao {
 
     @Query("SELECT * from persons ORDER BY name ASC")
     fun getAllPersons(): Flow<List<Person?>>
+
+    @Query("SELECT * from persons WHERE groupId = :groupId ORDER BY name ASC")
+    fun getPersonsGroup(groupId: Int): Flow<List<Person>>
 }

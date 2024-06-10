@@ -5,7 +5,6 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.owd.viewModels.AddExpenseViewModel
 import com.example.owd.viewModels.AddGroupViewModel
 import com.example.owd.viewModels.GroupDetailsViewModel
 import com.example.owd.viewModels.GroupsViewModel
@@ -26,18 +25,19 @@ object AppViewModelProvider {
                 savedStateHandle = this.createSavedStateHandle(),
                 groupsRepository = owdApplication().container.groupsRepository,
                 expenseRepository = owdApplication().container.expensesRepository,
-                personExpenseRepository = owdApplication().container.personExpenseRepository
+                personExpenseRepository = owdApplication().container.personExpenseRepository,
+                personsRepository = owdApplication().container.personsRepository
             )
         }
 
-        initializer {
-            AddExpenseViewModel(
-                savedStateHandle = this.createSavedStateHandle(),
-                groupsRepository = owdApplication().container.groupsRepository,
-                expensesRepository = owdApplication().container.expensesRepository,
-                personExpenseRepository = owdApplication().container.personExpenseRepository
-            )
-        }
+//        initializer {
+//            AddExpenseViewModel(
+//                savedStateHandle = this.createSavedStateHandle(),
+//                groupsRepository = owdApplication().container.groupsRepository,
+//                expensesRepository = owdApplication().container.expensesRepository,
+//                personExpenseRepository = owdApplication().container.personExpenseRepository
+//            )
+//        }
     }
 }
 

@@ -3,7 +3,7 @@ package com.example.owd.data.expenses
 import kotlinx.coroutines.flow.Flow
 
 interface ExpensesRepository {
-    suspend fun insert(expense: Expense)
+    suspend fun insert(expense: Expense) : Long
 
     suspend fun update(expense: Expense)
 

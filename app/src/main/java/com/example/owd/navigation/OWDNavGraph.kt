@@ -1,28 +1,36 @@
 package com.example.owd.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.owd.screens.AddExpense
+import com.example.owd.AppViewModelProvider
+import com.example.owd.screens.AddExpenseDest
 import com.example.owd.screens.AddExpenseScreen
 import com.example.owd.screens.AddGroup
 import com.example.owd.screens.AddGroupBackground
-import com.example.owd.screens.Expenses
 import com.example.owd.screens.ExpensesScreen
+import com.example.owd.screens.GroupDetailsDest
 import com.example.owd.screens.GroupsDest
 import com.example.owd.screens.MainScreen
+import com.example.owd.viewModels.GroupDetailsViewModel
 
+@SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 fun OwdNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
+    val myNavController = remember { navController }
     NavHost(
-        navController = navController,
+        navController = myNavController,
         startDestination = GroupsDest.route,
         modifier = modifier
     )
@@ -30,7 +38,7 @@ fun OwdNavHost(
         composable(route = GroupsDest.route) {
             MainScreen(
                 navigateToAddGroup = {navController.navigate(AddGroup.route)},
-                navigateToGroupDetails = {navController.navigate("${Expenses.route}/${it}")}
+                navigateToGroupDetails = {navController.navigate("${GroupDetailsDest.route}/${it}")}
             )
         }
         composable(route = AddGroup.route) {
@@ -41,23 +49,65 @@ fun OwdNavHost(
                     }
             )
         }
-        composable(route = Expenses.route) {
-            ExpensesScreen(
-                navigateToAddExpense = {navController.navigate(AddExpense.route)}
-            );
-        }
+//        composable(route = GroupDetailsDest.route) {
+//            val groupsViewModel: GroupDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+//            groupsViewModel.setGroupId(it.arguments?.getLong("groupId") ?: 0L)
+//            ExpensesScreen(
+//                navigateToAddExpense = {navController.navigate(AddExpense.route)},
+//                groupsViewModel
+//            )
+//        }
 
         composable(
-            route = Expenses.routeWithArgs,
-            arguments = listOf(navArgument(Expenses.groupId) {
+            route = GroupDetailsDest.routeWithArgs,
+            arguments = listOf(navArgument("groupId") {
                 type = NavType.LongType
             })
         ) {
-            ExpensesScreen(navigateToAddExpense = {navController.navigate(AddExpense.route)})
+            val groupsViewModel: GroupDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+            val groupId = it.arguments?.getLong("groupId") ?: 0L
+            LaunchedEffect(key1 = groupId) { // Key the effect to groupId
+                val previousGroupId = groupsViewModel.uiState.value.group.id
+                if (groupId != previousGroupId) {
+                    groupsViewModel.setGroupId(groupId)
+                }
+            }
+
+            ExpensesScreen(
+                navigateToAddExpense = {
+                    navController.navigate(AddExpenseDest.route)
+                                       },
+                groupsViewModel)
         }
 
-        composable(route = AddExpense.route) {
-            AddExpenseScreen()
+//        composable(
+//            route = AddExpense.route
+//        ) {
+//            val groupId = it.arguments?.getLong("groupId") ?: 0L
+//            val groupsViewModel: GroupDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+//            groupsViewModel.setGroupId(groupId)
+//            AddExpenseScreen(groupsViewModel)
+//        }
+
+        composable(
+            route = AddExpenseDest.route
+        ) {
+            val groupId = navController.previousBackStackEntry?.arguments?.getLong("groupId") ?: 0L
+            val groupsViewModel: GroupDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+
+            LaunchedEffect(key1 = groupId) { // Key the effect to groupId
+                val previousGroupId = groupsViewModel.uiState.value.group.id
+                if (groupId != previousGroupId) {
+                    groupsViewModel.setGroupId(groupId)
+                }
+            }
+
+            AddExpenseScreen(
+                groupsViewModel,
+                navigateBack = {
+                    navController.popBackStack()
+                    navController.navigate("${GroupDetailsDest.route}/$groupId")
+                })
         }
     }
 }

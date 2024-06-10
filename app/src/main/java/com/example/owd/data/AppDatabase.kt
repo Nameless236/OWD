@@ -13,7 +13,7 @@ import com.example.owd.data.persons.PersonDao
 import com.example.owd.data.personsExpense.PersonExpense
 import com.example.owd.data.personsExpense.PersonExpenseDao
 
-@Database(entities = [Group::class, Person::class, PersonExpense::class, Expense::class], version = 2, exportSchema = false)
+@Database(entities = [Group::class, Person::class, PersonExpense::class, Expense::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun groupDao(): GroupDao

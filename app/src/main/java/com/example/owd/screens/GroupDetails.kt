@@ -31,15 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.owd.AppViewModelProvider
 import com.example.owd.R
 import com.example.owd.data.expenses.Expense
 import com.example.owd.navigation.NavDest
 import com.example.owd.viewModels.GroupDetailsViewModel
 
-object Expenses : NavDest {
-    override val route = "expenses"
+object GroupDetailsDest : NavDest {
+    override val route = "group_details"
     override val screenTitle = R.string.add_group
     const val groupId = "groupId"
     val routeWithArgs = "$route/{$groupId}"
@@ -49,7 +47,7 @@ object Expenses : NavDest {
 @Composable
 fun ExpensesScreen(
     navigateToAddExpense: () -> Unit,
-    viewModel: GroupDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: GroupDetailsViewModel// = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.uiState.collectAsState()
     Scaffold(

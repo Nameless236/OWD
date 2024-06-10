@@ -12,4 +12,6 @@ class PersonsOfflineRepository(private val personDao: PersonDao) : PersonsReposi
     override fun getPerson(groupId: Int): Flow<Person?> = personDao.getPerson(groupId)
 
     override fun getAllPersons(): Flow<List<Person?>> = personDao.getAllPersons()
+
+    override fun getPersonsGroup(groupId: Int): Flow<List<Person>> = personDao.getPersonsGroup(groupId)
 }
