@@ -68,7 +68,7 @@ fun OwdNavHost(
             GroupDetailScreen(
                 navigateToAddExpense = { navController.navigate(AddExpenseDest.route) },
                 navigateToHome = {
-                    navController.popBackStack()
+                    navController.popBackStack(GroupsDest.route, false)
                     navController.navigate(GroupsDest.route)
                 },
                 viewModel = groupsViewModel
@@ -91,7 +91,7 @@ fun OwdNavHost(
             AddExpenseScreen(
                 viewModel = groupsViewModel,
                 navigateBack = {
-                    navController.popBackStack()
+                    navController.popBackStack("${GroupDetailsDest.route}/$groupId", false)
                     navController.navigate("${GroupDetailsDest.route}/$groupId")
                 }
             )

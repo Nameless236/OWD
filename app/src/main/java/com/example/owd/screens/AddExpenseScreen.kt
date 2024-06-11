@@ -82,8 +82,9 @@ fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit)
                 onClick = {
                     coroutineScope.launch {
                         viewModel.saveExpense()
+                        navigateBack()
                     }
-                    navigateBack()
+
                 },
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.primary,

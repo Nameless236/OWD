@@ -89,9 +89,11 @@ fun GroupDetailScreen(
                 onMenuExpand = { menuExpanded = !menuExpanded },
                 onDeleteGroup = {
                     coroutineScope.launch {
+                        menuExpanded = !menuExpanded
                         viewModel.deleteGroup()
+                        navigateToHome()
                     }
-                    navigateToHome()
+
                 }
             )
         },
