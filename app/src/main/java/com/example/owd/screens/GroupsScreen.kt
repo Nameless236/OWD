@@ -7,14 +7,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -24,12 +22,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,7 +42,7 @@ import com.example.owd.viewModels.GroupsViewModel
  * Represents the destination for the Groups screen.
  */
 object GroupsDest : NavDest{
-    override val route = "groups"
+    override val route = R.string.groups_route.toString()
     override val screenTitle = R.string.groups
 }
 
@@ -69,7 +67,7 @@ fun MainScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Groups",
+                        text = stringResource(id = R.string.groups),
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = MaterialTheme.typography.headlineLarge.fontWeight,
@@ -77,16 +75,6 @@ fun MainScreen(
                         fontStyle = MaterialTheme.typography.headlineLarge.fontStyle,
                         modifier = Modifier.padding(20.dp)
                     )
-                },
-                navigationIcon = {
-                    TextButton(
-                        onClick = {  },
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .size(60.dp)
-                    ) {
-                        Icon(Icons.Default.Menu, "Menu button for displaying settings")
-                    }
                 }
             )
         },
@@ -100,7 +88,7 @@ fun MainScreen(
                     .width(70.dp)
                     .height(70.dp)
             ) {
-                Icon(Icons.Filled.Add, "Small floating action button.")
+                Icon(Icons.Filled.Add, stringResource(id = R.string.add_group))
             }
         }
     ) {
@@ -128,7 +116,7 @@ fun GroupsBody(
     ) {
         if (groupList.isEmpty()) {
             Text(
-                text = "No groups found",
+                text = stringResource(id = R.string.no_groups),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(contentPadding)
@@ -163,7 +151,7 @@ fun GroupList(
                 group = group,
                 modifier = Modifier
                     .padding(10.dp)
-                    .clickable {onItemClick(group.id)}
+                    .clickable { onItemClick(group.id) }
             )
         }
     }

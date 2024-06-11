@@ -39,8 +39,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.coerceAtMost
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
@@ -59,25 +59,17 @@ import com.example.owd.data.persons.Person
 import com.example.owd.navigation.NavDest
 import com.example.owd.viewModels.GroupDetailUiState
 import com.example.owd.viewModels.GroupDetailsViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
-/**
- * Represents the destination for the Group Details screen.
- */
 object GroupDetailsDest : NavDest {
-    override val route = "group_details"
-    override val screenTitle = R.string.add_group
+    override val route = R.string.group_details_route.toString()
+    override val screenTitle = R.string.group_details
     const val groupId = "groupId"
     val routeWithArgs = "$route/{$groupId}"
 }
 
-/**
- * Composable function for displaying the Group Details screen.
- * @param navigateToAddExpense Function to navigate to the Add Expense screen.
- * @param navigateToHome Function to navigate to the Home screen.
- * @param viewModel ViewModel for managing Group Details data.
- */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupDetailScreen(
     navigateToAddExpense: () -> Unit,
@@ -90,125 +82,140 @@ fun GroupDetailScreen(
 
     Scaffold(
         topBar = {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                CenterAlignedTopAppBar(
-                    title = { Text(
-                        text = uiState.group.name,
-                        modifier = Modifier.padding(20.dp),
-                        fontSize = 40.sp,
-                        fontWeight = MaterialTheme.typography.headlineLarge.fontWeight,
-                        fontStyle = MaterialTheme.typography.headlineLarge.fontStyle,
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.headlineLarge
-                    )
-                    },
-                    actions = {
-                        IconButton(onClick = { menuExpanded = !menuExpanded }) {
-                            Icon(Icons.Filled.MoreVert, contentDescription = "More")
-                        }
-                        DropdownMenu(
-                            expanded = menuExpanded,
-                            onDismissRequest = { menuExpanded = false }
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text("Delete Group") },
-                                onClick = {
-                                    menuExpanded = false
-                                    coroutineScope.launch {
-                                        viewModel.deleteGroup()
-                                    }
-                                    navigateToHome()
-                                }
-                            )
-                        }
-                    })
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    TextButton(onClick = { viewModel.updateDisplayBalances(false) }) {
-                        Text(
-                            "Expenses",
-                            fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                            fontSize = 20.sp
-                        )
+            TopBar(
+                title = uiState.group.name,
+                viewModel = viewModel,
+                menuExpanded = menuExpanded,
+                onMenuExpand = { menuExpanded = !menuExpanded },
+                onDeleteGroup = {
+                    coroutineScope.launch {
+                        viewModel.deleteGroup()
                     }
-                    TextButton(onClick = { viewModel.updateDisplayBalances(true) }) {
-                        Text(
-                            "Balances",
-                            fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                            fontSize = 20.sp
-                        )
-                    }
+                    navigateToHome()
                 }
-            }
-
+            )
         },
         floatingActionButton = {
-            SmallFloatingActionButton(
-                onClick = navigateToAddExpense,
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.primary,
-                shape = MaterialTheme.shapes.large,
-                modifier = Modifier
-                    .width(70.dp)
-                    .height(70.dp)
-            ) {
-                Icon(Icons.Filled.Add, "Small floating action button.")
-            }
+            ActionButton(onClick = navigateToAddExpense)
         }
-    ) {
+    ) { innerPadding ->
         if (viewModel.displayBalancesChart.display) {
             viewModel.updateAmounts()
             val list = viewModel.addExpenseUiState.amounts
-            if (list.isEmpty())
-                Text("No expenses yet")
-            else
-                DisplayGraph(list, it)
-
+            if (list.isNotEmpty()) DisplayGraph(list, innerPadding)
         } else {
-            ExpenseScreen(it,uiState, viewModel)
+            ExpenseScreen(innerPadding, uiState, viewModel, coroutineScope)
         }
     }
 }
 
-/**
- * Composable function for displaying the list of expenses.
- * @param contentPaddingValues Padding values for the content.
- * @param uiState UI state containing group details.
- * @param viewModel ViewModel for managing Group Details data.
- */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpenseScreen(contentPaddingValues: PaddingValues,uiState: GroupDetailUiState , viewModel: GroupDetailsViewModel)
-{
-    LazyColumn (contentPadding = contentPaddingValues) {
+fun TopBar(
+    title: String,
+    menuExpanded: Boolean,
+    viewModel: GroupDetailsViewModel,
+    onMenuExpand: () -> Unit,
+    onDeleteGroup: () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        CenterAlignedTopAppBar(
+            title = {
+                Text(
+                    text = title,
+                    modifier = Modifier.padding(20.dp),
+                    fontSize = 40.sp,
+                    fontWeight = MaterialTheme.typography.headlineLarge.fontWeight,
+                    fontStyle = MaterialTheme.typography.headlineLarge.fontStyle,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.headlineLarge
+                )
+            },
+            actions = {
+                IconButton(onClick = onMenuExpand) {
+                    Icon(Icons.Filled.MoreVert, contentDescription = stringResource(id = R.string.more))
+                }
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = onMenuExpand
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(id = R.string.delete_group)) },
+                        onClick = onDeleteGroup
+                    )
+                }
+            })
+        ActionButtons(viewModel = viewModel)
+    }
+}
+
+@Composable
+fun ActionButtons(viewModel: GroupDetailsViewModel) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        TextButton(onClick = { viewModel.updateDisplayBalances(false) }) {
+            Text(
+                stringResource(id = R.string.expenses),
+                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
+                fontSize = 20.sp
+            )
+        }
+        TextButton(onClick = { viewModel.updateDisplayBalances(true) }) {
+            Text(
+                stringResource(id = R.string.balances),
+                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
+                fontSize = 20.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun ActionButton(onClick: () -> Unit) {
+    SmallFloatingActionButton(
+        onClick = onClick,
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.primary,
+        shape = MaterialTheme.shapes.large,
+        modifier = Modifier
+            .width(70.dp)
+            .height(70.dp)
+    ) {
+        Icon(Icons.Filled.Add, stringResource(id = R.string.add_expense))
+    }
+}
+
+@Composable
+fun ExpenseScreen(
+    contentPaddingValues: PaddingValues,
+    uiState: GroupDetailUiState,
+    viewModel: GroupDetailsViewModel,
+    coroutineScope: CoroutineScope
+) {
+    LazyColumn(contentPadding = contentPaddingValues) {
         items(uiState.expensesList) { expense ->
             val paidBy = uiState.members.find { it.id == expense.paidBy }?.name ?: ""
-            DisplayExpenses(expense, paidBy)
+            ExpenseCard(expense, paidBy, viewModel, coroutineScope)
         }
     }
 }
 
-/**
- * Composable function for displaying the bar chart.
- * @param data Data for the bar chart.
- * @param paddingValues Padding values for the chart.
- */
 @Composable
-fun DisplayGraph(data: List<Pair<Person, Float>>, paddingValues: PaddingValues)
-{
+fun DisplayGraph(data: List<Pair<Person, Float>>, paddingValues: PaddingValues) {
     val heightPerMember = 60.dp
     val graphHeight = (data.size * heightPerMember).coerceAtLeast(200.dp).coerceAtMost(700.dp)
 
-
-    Box(modifier = Modifier
-        .padding(paddingValues),
-        contentAlignment = Alignment.TopCenter) {
-        val maxX = data.maxOf { Math.abs(it.second) }
-        val pointList = data.mapIndexed { index, pair -> Point(pair.second/maxX, index.toFloat()) }
-
+    Box(
+        modifier = Modifier.padding(paddingValues),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        val maxX = data.maxOf { abs(it.second) }
+        val pointList = data.mapIndexed { index, pair ->
+            Point(pair.second / maxX, index.toFloat())
+        }
 
         val barData = pointList.mapIndexed { index, point ->
             BarData(
@@ -239,7 +246,8 @@ fun DisplayGraph(data: List<Pair<Person, Float>>, paddingValues: PaddingValues)
                 """ ${data[index].first.name} 
                    ${Math.round(data[index].second * 100.0) / 100.0}€
                    
-                   """ }
+                   """
+            }
             .setDataCategoryOptions(
                 DataCategoryOptions(
                     isDataCategoryInYAxis = true,
@@ -261,7 +269,7 @@ fun DisplayGraph(data: List<Pair<Person, Float>>, paddingValues: PaddingValues)
                     highlightBarColor = Color.Red,
                     highlightTextColor = MaterialTheme.colorScheme.tertiary,
                     highlightTextBackgroundColor = MaterialTheme.colorScheme.surface,
-                    popUpLabel = { x, _ -> " Owes : $x " },
+                    popUpLabel = { x, _ -> "Owes: ${x * Math.round(maxX * 100.0) / 100.0}" },
                     barChartType = BarChartType.HORIZONTAL
                 ),
             ),
@@ -272,8 +280,7 @@ fun DisplayGraph(data: List<Pair<Person, Float>>, paddingValues: PaddingValues)
         )
 
         Box(
-            modifier = Modifier
-                .height(graphHeight),
+            modifier = Modifier.height(graphHeight),
             contentAlignment = Alignment.TopCenter
         ) {
             BarChart(
@@ -284,24 +291,16 @@ fun DisplayGraph(data: List<Pair<Person, Float>>, paddingValues: PaddingValues)
     }
 }
 
-
-/**
- * Composable function for displaying the details of an expense.
- * @param expense Expense details.
- * @param paidBy Name of the person who paid for the expense.
- */
 @Composable
-fun DisplayExpenses(expense: Expense, paidBy: String)
-{
+fun ExpenseCard(expense: Expense, paidBy: String, viewModel: GroupDetailsViewModel, coroutineScope: CoroutineScope) {
+    var menuExpanded by remember { mutableStateOf(false) }
+
     Card(
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier.padding(10.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = expense.name,
                 style = MaterialTheme.typography.titleLarge,
@@ -309,24 +308,46 @@ fun DisplayExpenses(expense: Expense, paidBy: String)
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Spacer(Modifier.weight(1f))
-            Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(
-                    text = "Paid by " + paidBy,
+                    text = stringResource(id = R.string.paid) + paidBy,
                     fontStyle = MaterialTheme.typography.bodyLarge.fontStyle,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(10.dp),
                     textAlign = TextAlign.Start
                 )
                 Text(
-                    text = expense.amount.toString() + "€",
+                    text = expense.amount.toString() + stringResource(id = R.string.eur),
                     fontStyle = MaterialTheme.typography.bodyLarge.fontStyle,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(10.dp),
-
-                    )
-
+                )
+                Column {
+                    IconButton(onClick = { menuExpanded = !menuExpanded }) {
+                        Icon(
+                            Icons.Filled.MoreVert,
+                            contentDescription = stringResource(id = R.string.more)
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = menuExpanded,
+                        onDismissRequest = { menuExpanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.delete_expense)) },
+                            onClick = {
+                                coroutineScope.launch {
+                                    viewModel.deleteExpense(expense)
+                                    menuExpanded = false
+                                }
+                            }
+                        )
+                    }
+                }
             }
         }
     }
-
 }

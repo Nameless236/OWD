@@ -206,6 +206,10 @@ class GroupDetailsViewModel(
         displayBalancesChart = displayBalancesChart.copy(display = display)
     }
 
+    suspend fun deleteExpense(expense: Expense) {
+        expenseRepository.delete(expense)
+    }
+
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }

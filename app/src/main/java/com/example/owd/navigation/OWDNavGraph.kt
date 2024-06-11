@@ -14,7 +14,7 @@ import com.example.owd.AppViewModelProvider
 import com.example.owd.screens.AddExpenseDest
 import com.example.owd.screens.AddExpenseScreen
 import com.example.owd.screens.AddGroup
-import com.example.owd.screens.AddGroupBackground
+import com.example.owd.screens.AddGroupScreen
 import com.example.owd.screens.GroupDetailScreen
 import com.example.owd.screens.GroupDetailsDest
 import com.example.owd.screens.GroupsDest
@@ -42,7 +42,7 @@ fun OwdNavHost(
             )
         }
         composable(route = AddGroup.route) {
-            AddGroupBackground(
+            AddGroupScreen(
                 navigateBack = {
                     navController.popBackStack()
                     navController.navigate(GroupsDest.route)

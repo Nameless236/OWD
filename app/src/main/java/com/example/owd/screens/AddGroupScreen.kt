@@ -43,16 +43,17 @@ import com.example.owd.AppViewModelProvider
 import com.example.owd.R
 import com.example.owd.navigation.NavDest
 import com.example.owd.viewModels.AddGroupViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 object AddGroup : NavDest {
-    override val route = "add_group"
+    override val route = R.string.add_group_route.toString()
     override val screenTitle = R.string.add_group
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddGroupBackground(
+fun AddGroupScreen(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddGroupViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -60,113 +61,125 @@ fun AddGroupBackground(
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(title = {
-                Text(
-                    text = stringResource(id = R.string.add_group),
-                    modifier = Modifier.padding(20.dp),
-                    fontSize = 40.sp,
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge
-                )
-            })
-        },
-        modifier = modifier,
-        floatingActionButton = {
-            SmallFloatingActionButton(
-                onClick = {
-                    coroutineScope.launch {
-                        viewModel.saveItem()
-                        navigateBack()
-                    }
-                },
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.primary,
-                shape = CircleShape,
-                modifier = Modifier
-                    .width(70.dp)
-                    .height(70.dp)
-            ) {
-                Icon(Icons.Filled.Check, "Small floating action button.")
-            }
-        }
+        topBar = { AddGroupTopBar() },
+        floatingActionButton = { SaveGroupButton(viewModel, navigateBack, coroutineScope) },
+        modifier = modifier
     ) { innerPadding ->
-        LazyColumn(modifier = Modifier.padding(innerPadding)) {
-            item {
-                Text(
-                    text = "Group Name",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                    modifier = Modifier.padding(10.dp)
-                )
-                TextField(
-                    value = viewModel.groupUIState.groupDetails.name,
-                    onValueChange = { viewModel.updateName(it) },
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth(),
-                    label = { Text("Group Name") },
-                    textStyle = MaterialTheme.typography.headlineSmall,
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                )
-                Text(
-                    text = "Group description",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                    modifier = Modifier.padding(10.dp)
-                )
+        GroupDetailsForm(viewModel, coroutineScope, Modifier.padding(innerPadding))
+    }
+}
 
-                TextField(
-                    value = viewModel.groupUIState.groupDetails.description,
-                    onValueChange = { viewModel.updateDescription(it) },
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth(),
-                    label = { Text("Group Description") },
-                    textStyle = MaterialTheme.typography.headlineSmall,
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { /* Handle next action */ })
-                )
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddGroupTopBar() {
+    CenterAlignedTopAppBar(
+        title = {
+            Text(
+                text = stringResource(id = R.string.add_group),
+                modifier = Modifier.padding(20.dp),
+                fontSize = 40.sp,
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.headlineLarge
+            )
+        }
+    )
+}
 
-                Text(
-                    text = "Members",
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(10.dp)
-                )
+@Composable
+fun SaveGroupButton(viewModel: AddGroupViewModel, navigateBack: () -> Unit, coroutineScope: CoroutineScope) {
+    SmallFloatingActionButton(
+        onClick = {
+            coroutineScope.launch {
+                viewModel.saveItem()
+                navigateBack()
             }
+        },
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.primary,
+        shape = CircleShape,
+        modifier = Modifier
+            .width(70.dp)
+            .height(70.dp)
+    ) {
+        Icon(Icons.Filled.Check, stringResource(id = R.string.add_group))
+    }
+}
 
-            items(viewModel.groupUIState.groupDetails.members) { member ->
-                Members(member)
-            }
+@Composable
+fun GroupDetailsForm(viewModel: AddGroupViewModel, coroutineScope: CoroutineScope, modifier: Modifier) {
+    LazyColumn(modifier = modifier) {
+        item {
+            GroupDetailsTextField(
+                label = stringResource(id = R.string.group_name),
+                value = viewModel.groupUIState.groupDetails.name,
+                onValueChange = viewModel::updateName
+            )
+            GroupDetailsTextField(
+                label = stringResource(id = R.string.group_description),
+                value = viewModel.groupUIState.groupDetails.description,
+                onValueChange = viewModel::updateDescription
+            )
+            Text(
+                text = stringResource(id = R.string.members),
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.padding(10.dp)
+            )
+        }
 
-            item {
-                Card(modifier = Modifier.padding(10.dp), shape = RectangleShape) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(onClick = { viewModel.addMember() }) {
-                                Icon(Icons.Filled.Add, "Add member")
-                            }
-                            TextField(
-                                value = viewModel.newMemberName,
-                                onValueChange = { viewModel.newMemberName = it },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(bottom = 10.dp),
-                                label = { Text("Add member") },
-                                textStyle = MaterialTheme.typography.headlineSmall,
-                                singleLine = true,
-                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                                keyboardActions = KeyboardActions(onDone = {
-                                    coroutineScope.launch {
-                                        viewModel.addMember()
-                                    }
-                                })
-                            )
-                        }
-                    }
+        items(viewModel.groupUIState.groupDetails.members) { member ->
+            Members(member)
+        }
+
+        item {
+            NewMemberCard(viewModel, coroutineScope)
+        }
+    }
+}
+
+@Composable
+fun GroupDetailsTextField(label: String, value: String, onValueChange: (String) -> Unit) {
+    Column(modifier = Modifier.padding(10.dp)) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.headlineSmall,
+            fontStyle = MaterialTheme.typography.titleMedium.fontStyle
+        )
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text(label) },
+            textStyle = MaterialTheme.typography.headlineSmall,
+            singleLine = true,
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
+        )
+    }
+}
+
+@Composable
+fun NewMemberCard(viewModel: AddGroupViewModel, coroutineScope: CoroutineScope) {
+    Card(modifier = Modifier.padding(10.dp), shape = RectangleShape) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = { viewModel.addMember() }) {
+                    Icon(Icons.Filled.Add, stringResource(id = R.string.add_member))
                 }
+                TextField(
+                    value = viewModel.newMemberName,
+                    onValueChange = { viewModel.newMemberName = it },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(bottom = 10.dp),
+                    label = { Text(stringResource(id = R.string.add_member)) },
+                    textStyle = MaterialTheme.typography.headlineSmall,
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {
+                        coroutineScope.launch {
+                            viewModel.addMember()
+                        }
+                    })
+                )
             }
         }
     }

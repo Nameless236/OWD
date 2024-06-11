@@ -1,7 +1,5 @@
 package com.example.owd.screens
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,8 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
@@ -37,6 +35,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.owd.R
@@ -47,8 +48,8 @@ import com.example.owd.viewModels.GroupDetailsViewModel
 import kotlinx.coroutines.launch
 
 object AddExpenseDest : NavDest {
-    override val route = "add_expense"
-    override val screenTitle = R.string.add_group
+    override val route = R.string.add_expense_route.toString()
+    override val screenTitle = R.string.add_expense
     const val groupId = "groupId"
 }
 
@@ -65,7 +66,7 @@ fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit)
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Add Expense",
+                        text = stringResource(id = R.string.add_expense),
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.headlineLarge,
                         fontSize = 40.sp,
@@ -91,12 +92,11 @@ fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit)
                     .width(70.dp)
                     .height(70.dp)
             ) {
-                Icon(Icons.Filled.Check, "Small floating action button.")
+                Icon(Icons.Filled.Check, stringResource(id = R.string.add_expense))
             }
         },
         modifier = Modifier
             .fillMaxWidth()
-            .scrollable(rememberScrollState(), orientation = Orientation.Vertical)
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -118,10 +118,13 @@ fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit)
 @Composable
 fun AddExpenseForm(viewModel: GroupDetailsViewModel,members:List<Person>, uiState: AddExpenseUiState, expanded: Boolean, onExpandedChange: (Boolean) -> Unit)
 {
-    ExpenseFormField("Title", uiState.expenseDetails.name) { viewModel.updateTitle(it) }
-    ExpenseFormField("Amount", uiState.expenseDetails.amount) { viewModel.updateAmount(it) }
+    ExpenseFormField(stringResource(id = R.string.title), uiState.expenseDetails.name, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)) { viewModel.updateTitle(it) }
+    ExpenseFormField(stringResource(id = R.string.amount), uiState.expenseDetails.amount, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Number)) { newValue ->
+        if (newValue.all { it.isDigit() || it == '.' }) {
+            viewModel.updateAmount(newValue) }
+        }
     Text(
-        text = "Paid by",
+        text = stringResource(id = R.string.paid_by),
         style = MaterialTheme.typography.headlineSmall,
         fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
         modifier = Modifier.padding(10.dp)
@@ -129,7 +132,7 @@ fun AddExpenseForm(viewModel: GroupDetailsViewModel,members:List<Person>, uiStat
     MemberSelection(viewModel, members, expanded, onExpandedChange)
 
     Text(
-        text = "Members",
+        text =stringResource(id = R.string.members),
         style = MaterialTheme.typography.headlineSmall,
         fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
         modifier = Modifier.padding(10.dp)
@@ -148,7 +151,7 @@ fun MemberSelection(viewModel: GroupDetailsViewModel,members: List<Person>, expa
         ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = onExpandedChange) {
             TextField(
                 modifier = Modifier.menuAnchor(),
-                value = selectedMember?.name ?: "Select payer",
+                value = selectedMember?.name ?: stringResource(id = R.string.select_payer),
                 onValueChange = {},
                 readOnly = true
             )
@@ -171,7 +174,7 @@ fun MemberSelection(viewModel: GroupDetailsViewModel,members: List<Person>, expa
 }
 
 @Composable
-fun ExpenseFormField(label: String, value: String, onValueChange: (String) -> Unit)
+fun ExpenseFormField(label: String, value: String, keyboardOptions: KeyboardOptions = KeyboardOptions.Default, onValueChange: (String) -> Unit)
 {
     Text(
         text = label,
@@ -185,7 +188,8 @@ fun ExpenseFormField(label: String, value: String, onValueChange: (String) -> Un
         modifier = Modifier
             .padding(bottom = 10.dp)
             .fillMaxWidth(),
-        label = { Text(label) }
+        label = { Text(label) },
+        keyboardOptions = keyboardOptions,
     )
 }
 

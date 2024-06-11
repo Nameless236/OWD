@@ -2,4 +2,26 @@
     <string name="app_name">OWD</string>
     <string name="groups">Groups</string>
     <string name="add_group">Add group</string>
+    <string name="paid_by">Paid by</string>
+    <string name="title">Title</string>
+    <string name="amount">Amount</string>
+    <string name="members">Members</string>
+    <string name="select_payer">Select payer</string>
+    <string name="add_member">Add member</string>
+    <string name="group_description">Group description</string>
+    <string name="group_name">Group name</string>
+    <string name="add_group_route">add_group</string>
+    <string name="add_expense_route">add_expense</string>
+    <string name="add_expense">Add expense</string>
+    <string name="more">More</string>
+    <string name="delete_group">Delete group</string>
+    <string name="expenses">Expenses</string>
+    <string name="balances">Balances</string>
+    <string name="eur">€</string>
+    <string name="paid">"Paid by "</string>
+    <string name="group_details_route">group_details</string>
+    <string name="group_details">Group details</string>
+    <string name="groups_route">groups_route</string>
+    <string name="no_groups">No groups were found.</string>
+    <string name="delete_expense">Delete expense</string>
 </resources>
