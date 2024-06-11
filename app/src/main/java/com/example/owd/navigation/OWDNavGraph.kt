@@ -1,6 +1,5 @@
 package com.example.owd.navigation
 
-import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -22,7 +21,6 @@ import com.example.owd.screens.GroupsDest
 import com.example.owd.screens.MainScreen
 import com.example.owd.viewModels.GroupDetailsViewModel
 
-@SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 fun OwdNavHost(
     navController: NavHostController,
@@ -37,8 +35,10 @@ fun OwdNavHost(
     {
         composable(route = GroupsDest.route) {
             MainScreen(
-                navigateToAddGroup = {navController.navigate(AddGroup.route)},
-                navigateToGroupDetails = {navController.navigate("${GroupDetailsDest.route}/${it}")}
+                navigateToAddGroup = { navController.navigate(AddGroup.route) },
+                navigateToGroupDetails = { groupId ->
+                    navController.navigate("${GroupDetailsDest.route}/$groupId")
+                }
             )
         }
         composable(route = AddGroup.route) {
@@ -46,7 +46,7 @@ fun OwdNavHost(
                 navigateBack = {
                     navController.popBackStack()
                     navController.navigate(GroupsDest.route)
-                    }
+                }
             )
         }
 
@@ -70,8 +70,9 @@ fun OwdNavHost(
                 navigateToHome = {
                     navController.popBackStack()
                     navController.navigate(GroupsDest.route)
-                                 },
-                groupsViewModel)
+                },
+                viewModel = groupsViewModel
+            )
         }
 
         composable(
@@ -88,11 +89,12 @@ fun OwdNavHost(
             }
 
             AddExpenseScreen(
-                groupsViewModel,
+                viewModel = groupsViewModel,
                 navigateBack = {
                     navController.popBackStack()
                     navController.navigate("${GroupDetailsDest.route}/$groupId")
-                })
+                }
+            )
         }
     }
 }

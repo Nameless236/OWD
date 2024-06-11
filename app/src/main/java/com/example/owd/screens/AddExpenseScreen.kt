@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import com.example.owd.R
 import com.example.owd.data.persons.Person
 import com.example.owd.navigation.NavDest
+import com.example.owd.viewModels.AddExpenseUiState
 import com.example.owd.viewModels.GroupDetailsViewModel
 import kotlinx.coroutines.launch
 
@@ -62,17 +63,17 @@ fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit)
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(
-                    text = "Add Expense",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontSize = 40.sp,
-                    fontWeight = MaterialTheme.typography.headlineLarge.fontWeight,
-                    fontStyle = MaterialTheme.typography.headlineLarge.fontStyle,
-                    modifier = Modifier.padding(20.dp)
-                )
-            },
-
+                title = {
+                    Text(
+                        text = "Add Expense",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontSize = 40.sp,
+                        fontWeight = MaterialTheme.typography.headlineLarge.fontWeight,
+                        fontStyle = MaterialTheme.typography.headlineLarge.fontStyle,
+                        modifier = Modifier.padding(20.dp)
+                    )
+                }
             )
         },
         floatingActionButton = {
@@ -93,88 +94,58 @@ fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit)
                 Icon(Icons.Filled.Check, "Small floating action button.")
             }
         },
-        modifier = Modifier.fillMaxWidth().scrollable(rememberScrollState(), orientation = Orientation.Vertical)
+        modifier = Modifier
+            .fillMaxWidth()
+            .scrollable(rememberScrollState(), orientation = Orientation.Vertical)
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
-                .padding(innerPadding)
-                .scrollable(rememberScrollState(), orientation = Orientation.Vertical)
-        ) {
-            Text(
-                text = "Title",
-                style = MaterialTheme.typography.headlineSmall,
-                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                modifier = Modifier.padding(10.dp)
-            )
-            TextField(
-                value = viewModel._addExpenseUiState.expenseDetails.name,
-                onValueChange = { viewModel.updateTitle(it) },
-                modifier = Modifier
-                    .padding(bottom = 10.dp)
-                    .fillMaxWidth(),
-                label = { Text("Title") })
-
-            Text(
-                text = "Amount",
-                style = MaterialTheme.typography.headlineSmall,
-                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                modifier = Modifier.padding(10.dp)
-            )
-
-            TextField(
-                value = viewModel._addExpenseUiState.expenseDetails.amount,
-                onValueChange = { viewModel.updateAmount(it) },
-                modifier = Modifier
-                    .padding(bottom = 10.dp)
-                    .fillMaxWidth(),
-                label = { Text("Amount") })
-
-            Text(
-                text = "Paid by",
-                style = MaterialTheme.typography.headlineSmall,
-                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                modifier = Modifier.padding(10.dp)
-            )
-            MemberSelection(viewModel, uiState.members, expanded, { expanded = it }) {
-                expanded = false
+                .padding(innerPadding)) {
+            item {
+                AddExpenseForm(viewModel,uiState.members, viewModel.addExpenseUiState, expanded) { expanded = it }
             }
-
-            Text(
-                text = "Members",
-                style = MaterialTheme.typography.headlineSmall,
-                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                modifier = Modifier.padding(10.dp)
-            )
-            LazyColumn {
-                items(uiState.members) { member ->
-                    val isSelected = selectedMembers.contains(member)
-                    Members(member, isSelected) { isChecked ->
-                        val updatedList = selectedMembers.toMutableList()
-                        if (isChecked) {
-                            updatedList.add(member)
-                        } else {
-                            updatedList.remove(member)
-                        }
-                        selectedMembers = updatedList
-                        viewModel.updateSelectedMembers(selectedMembers)
-                    }
+            items(uiState.members) { member ->
+                val isSelected = selectedMembers.contains(member)
+                Members(member, isSelected) { isChecked ->
+                    selectedMembers = if (isChecked) selectedMembers + member else selectedMembers - member
+                    viewModel.updateSelectedMembers(selectedMembers)
                 }
             }
         }
     }
 }
 
+@Composable
+fun AddExpenseForm(viewModel: GroupDetailsViewModel,members:List<Person>, uiState: AddExpenseUiState, expanded: Boolean, onExpandedChange: (Boolean) -> Unit)
+{
+    ExpenseFormField("Title", uiState.expenseDetails.name) { viewModel.updateTitle(it) }
+    ExpenseFormField("Amount", uiState.expenseDetails.amount) { viewModel.updateAmount(it) }
+    Text(
+        text = "Paid by",
+        style = MaterialTheme.typography.headlineSmall,
+        fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
+        modifier = Modifier.padding(10.dp)
+    )
+    MemberSelection(viewModel, members, expanded, onExpandedChange)
+
+    Text(
+        text = "Members",
+        style = MaterialTheme.typography.headlineSmall,
+        fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
+        modifier = Modifier.padding(10.dp)
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MemberSelection(viewModel: GroupDetailsViewModel,members: List<Person>, expanded: Boolean, onExpandedChange: (Boolean) -> Unit, onDismissChange: () -> Unit) {
-
+fun MemberSelection(viewModel: GroupDetailsViewModel,members: List<Person>, expanded: Boolean, onExpandedChange: (Boolean) -> Unit)
+{
     var selectedMember by remember { mutableStateOf<Person?>(null) }
 
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(8.dp)) {
-        ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { onExpandedChange(it) }) {
-
+        ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = onExpandedChange) {
             TextField(
                 modifier = Modifier.menuAnchor(),
                 value = selectedMember?.name ?: "Select payer",
@@ -182,14 +153,14 @@ fun MemberSelection(viewModel: GroupDetailsViewModel,members: List<Person>, expa
                 readOnly = true
             )
 
-            ExposedDropdownMenu(expanded = expanded, onDismissRequest = { onDismissChange() }) {
+            ExposedDropdownMenu(expanded = expanded, onDismissRequest = { onExpandedChange(false) }) {
                 members.forEach { member ->
                     DropdownMenuItem(
                         text = { Text(text = member.name) },
                         onClick = {
                             selectedMember = member
                             viewModel.updatePayer(member)
-                            onDismissChange()
+                            onExpandedChange(false)
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                     )
@@ -197,6 +168,25 @@ fun MemberSelection(viewModel: GroupDetailsViewModel,members: List<Person>, expa
             }
         }
     }
+}
+
+@Composable
+fun ExpenseFormField(label: String, value: String, onValueChange: (String) -> Unit)
+{
+    Text(
+        text = label,
+        style = MaterialTheme.typography.headlineSmall,
+        fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
+        modifier = Modifier.padding(10.dp)
+    )
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier
+            .padding(bottom = 10.dp)
+            .fillMaxWidth(),
+        label = { Text(label) }
+    )
 }
 
 @Composable
@@ -219,7 +209,6 @@ fun Members(member: Person, isSelected: Boolean, onSelectionChange: (Boolean) ->
                         .padding(10.dp)
                         .fillMaxWidth(0.8f)
                 )
-
             }
         }
     }

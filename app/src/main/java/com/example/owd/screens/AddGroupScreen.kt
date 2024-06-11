@@ -1,7 +1,5 @@
 package com.example.owd.screens
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,8 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
@@ -36,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -58,6 +58,7 @@ fun AddGroupBackground(
     viewModel: AddGroupViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = {
@@ -69,7 +70,8 @@ fun AddGroupBackground(
                     style = MaterialTheme.typography.headlineLarge
                 )
             })
-        }, modifier = Modifier.fillMaxWidth(),
+        },
+        modifier = modifier,
         floatingActionButton = {
             SmallFloatingActionButton(
                 onClick = {
@@ -77,12 +79,10 @@ fun AddGroupBackground(
                         viewModel.saveItem()
                         navigateBack()
                     }
-
                 },
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.primary,
                 shape = CircleShape,
-
                 modifier = Modifier
                     .width(70.dp)
                     .height(70.dp)
@@ -90,76 +90,83 @@ fun AddGroupBackground(
                 Icon(Icons.Filled.Check, "Small floating action button.")
             }
         }
-    ) {innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .scrollable(rememberScrollState(), orientation = Orientation.Vertical)
-        ) {
-            Text(
-                text = "Group name",
-                style = MaterialTheme.typography.headlineSmall,
-                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                modifier = Modifier.padding(10.dp)
-            )
-            TextField(
-                value = viewModel.groupUIState.groupDetails.name,
-                onValueChange = { viewModel.updateName(it) },
-                modifier = Modifier
-                    .padding(bottom = 10.dp)
-                    .fillMaxWidth(),
-                label = { Text("Group Name") })
+    ) { innerPadding ->
+        LazyColumn(modifier = Modifier.padding(innerPadding)) {
+            item {
+                Text(
+                    text = "Group Name",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
+                    modifier = Modifier.padding(10.dp)
+                )
+                TextField(
+                    value = viewModel.groupUIState.groupDetails.name,
+                    onValueChange = { viewModel.updateName(it) },
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth(),
+                    label = { Text("Group Name") },
+                    textStyle = MaterialTheme.typography.headlineSmall,
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                )
+                Text(
+                    text = "Group description",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
+                    modifier = Modifier.padding(10.dp)
+                )
 
-            Text(
-                text = "Group description",
-                style = MaterialTheme.typography.headlineSmall,
-                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                modifier = Modifier.padding(10.dp)
-            )
+                TextField(
+                    value = viewModel.groupUIState.groupDetails.description,
+                    onValueChange = { viewModel.updateDescription(it) },
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth(),
+                    label = { Text("Group Description") },
+                    textStyle = MaterialTheme.typography.headlineSmall,
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { /* Handle next action */ })
+                )
 
-            TextField(
-                value = viewModel.groupUIState.groupDetails.description,
-                onValueChange = { viewModel.updateDescription(it) },
-                modifier = Modifier
-                    .padding(bottom = 10.dp)
-                    .fillMaxWidth(),
-                label = { Text("Group Description") })
+                Text(
+                    text = "Members",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(10.dp)
+                )
+            }
 
-            Text(
-                text = "Members",
-                style = MaterialTheme.typography.headlineSmall,
-                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
-                modifier = Modifier.padding(10.dp)
-            )
-            LazyColumn {
-                items(viewModel.groupUIState.groupDetails.members) { member ->
-                    Members(member)
-                }
-                item {
-                    Card(modifier = Modifier, shape = RectangleShape) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.CenterHorizontally)
-                        ) {
-                            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                                TextField(
-                                    value = viewModel.newMemberName,
-                                    onValueChange = { viewModel.newMemberName = it },
-                                    modifier = Modifier
-                                        .padding(bottom = 10.dp)
-                                        .fillMaxWidth(0.8f),
-                                    label = { Text("Add member") })
-                                IconButton(onClick = {
-                                    viewModel.addMember()
-                                }) {
-                                    Icon(Icons.Filled.Add, "Add member")
-                                }
+            items(viewModel.groupUIState.groupDetails.members) { member ->
+                Members(member)
+            }
+
+            item {
+                Card(modifier = Modifier.padding(10.dp), shape = RectangleShape) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = { viewModel.addMember() }) {
+                                Icon(Icons.Filled.Add, "Add member")
                             }
+                            TextField(
+                                value = viewModel.newMemberName,
+                                onValueChange = { viewModel.newMemberName = it },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(bottom = 10.dp),
+                                label = { Text("Add member") },
+                                textStyle = MaterialTheme.typography.headlineSmall,
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                                keyboardActions = KeyboardActions(onDone = {
+                                    coroutineScope.launch {
+                                        viewModel.addMember()
+                                    }
+                                })
+                            )
                         }
                     }
                 }
-
             }
         }
     }
@@ -168,21 +175,17 @@ fun AddGroupBackground(
 @Composable
 fun Members(member: String) {
     var checked by remember { mutableStateOf(true) }
-    Card(modifier = Modifier, shape = RectangleShape) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)
-        ) {
-            Row(modifier = Modifier) {
-                Text(
-                    text = member,
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth(0.8f)
-                )
-                Checkbox(checked = checked, onCheckedChange = {})
-            }
+    Card(modifier = Modifier.padding(10.dp), shape = RectangleShape) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(
+                checked = checked,
+                onCheckedChange = { checked = it },
+                modifier = Modifier.padding(5.dp)
+            )
+            Text(
+                text = member,
+                modifier = Modifier.weight(1f)
+            )
         }
     }
 }

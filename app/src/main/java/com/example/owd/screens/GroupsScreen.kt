@@ -40,62 +40,82 @@ import com.example.owd.data.groups.Group
 import com.example.owd.navigation.NavDest
 import com.example.owd.viewModels.GroupsViewModel
 
+/**
+ * Represents the destination for the Groups screen.
+ */
 object GroupsDest : NavDest{
     override val route = "groups"
     override val screenTitle = R.string.groups
 }
 
-
+/**
+ * Composable function for displaying the main Groups screen.
+ * @param navigateToAddGroup Function to navigate to the Add Group screen.
+ * @param navigateToGroupDetails Function to navigate to the Group Details screen.
+ * @param modifier Modifier for the screen.
+ * @param viewModel ViewModel for managing Groups data.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(navigateToAddGroup: () -> Unit,
-               navigateToGroupDetails: (Long) -> Unit,
-               modifier: Modifier = Modifier,
-               viewModel: GroupsViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
-
+fun MainScreen(
+    navigateToAddGroup: () -> Unit,
+    navigateToGroupDetails: (Long) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: GroupsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
     val groupsState by viewModel.groupsUIState.collectAsState()
     Scaffold (
-        topBar = { CenterAlignedTopAppBar(title = {
-            Text(
-                text = "Groups",
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = MaterialTheme.typography.headlineLarge.fontWeight,
-                fontSize = 40.sp,
-                fontStyle = MaterialTheme.typography.headlineLarge.fontStyle,
-                modifier = Modifier.padding(20.dp)
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = "Groups",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = MaterialTheme.typography.headlineLarge.fontWeight,
+                        fontSize = 40.sp,
+                        fontStyle = MaterialTheme.typography.headlineLarge.fontStyle,
+                        modifier = Modifier.padding(20.dp)
+                    )
+                },
+                navigationIcon = {
+                    TextButton(
+                        onClick = {  },
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .size(60.dp)
+                    ) {
+                        Icon(Icons.Default.Menu, "Menu button for displaying settings")
+                    }
+                }
             )
-        }, navigationIcon = {
-            TextButton(
-                onClick = {  },
-                modifier = Modifier
-                    .padding(10.dp)
-                    .size(60.dp)
-            ) {
-                Icon(Icons.Default.Menu, "Menu button for displaying settings")
-            }
-        })
         },
-
         floatingActionButton = {
-        SmallFloatingActionButton(
-            onClick = navigateToAddGroup,
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.primary,
-            shape = MaterialTheme.shapes.large,
-            modifier = Modifier
-                .width(70.dp)
-                .height(70.dp)
-        ) {
-            Icon(Icons.Filled.Add, "Small floating action button.")
+            SmallFloatingActionButton(
+                onClick = navigateToAddGroup,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.primary,
+                shape = MaterialTheme.shapes.large,
+                modifier = Modifier
+                    .width(70.dp)
+                    .height(70.dp)
+            ) {
+                Icon(Icons.Filled.Add, "Small floating action button.")
+            }
         }
-    }){
-        innerPadding ->
-            GroupsBody(groupList = groupsState.groupList, contentPadding = innerPadding, onItemClick = navigateToGroupDetails)
+    ) {
+            innerPadding ->
+        GroupsBody(groupList = groupsState.groupList, contentPadding = innerPadding, onItemClick = navigateToGroupDetails)
 
     }
 }
 
+/**
+ * Composable function for displaying the body of the Groups screen.
+ * @param groupList List of groups to display.
+ * @param onItemClick Function to handle item click events.
+ * @param contentPadding Padding values for the content.
+ */
 @Composable
 fun GroupsBody(
     groupList: List<Group>,
@@ -123,7 +143,13 @@ fun GroupsBody(
     }
 }
 
-
+/**
+ * Composable function for displaying the list of groups.
+ * @param groupList List of groups to display.
+ * @param onItemClick Function to handle item click events.
+ * @param contentPadding Padding values for the content.
+ * @param modifier Modifier for the list.
+ */
 @Composable
 fun GroupList(
     groupList: List<Group>,
@@ -143,6 +169,11 @@ fun GroupList(
     }
 }
 
+/**
+ * Composable function for displaying a single group item.
+ * @param group Group to display.
+ * @param modifier Modifier for the group item.
+ */
 @Composable
 fun GroupItem(
     group: Group,
@@ -152,24 +183,23 @@ fun GroupItem(
         shape = RoundedCornerShape(10.dp),
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-                Text(
-                    text = group.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                Spacer(Modifier.weight(1f))
-                Text(
-                    text = group.description,
-                    fontStyle = MaterialTheme.typography.bodyLarge.fontStyle,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(10.dp)
-                )
+            Text(
+                text = group.name,
+                style = MaterialTheme.typography.titleLarge,
+                fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            Spacer(Modifier.weight(1f))
+            Text(
+                text = group.description,
+                fontStyle = MaterialTheme.typography.bodyLarge.fontStyle,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(10.dp)
+            )
         }
     }
 }

@@ -4,22 +4,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.owd.data.groups.Group
 import com.example.owd.data.groups.GroupsRepository
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
-class GroupsViewModel(groupsRepository: GroupsRepository) : ViewModel() {
-    val groupsUIState: StateFlow<GroupUIState> =
-        groupsRepository.getAllGroups().map { GroupUIState(it) }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = GroupUIState()
-            )
-    companion object {
-        private const val TIMEOUT_MILLIS = 5_000L
+class GroupsViewModel(private val groupsRepository: GroupsRepository) : ViewModel() {
+    private val _groupsUIState = MutableStateFlow(GroupUIState())
+
+    val groupsUIState: StateFlow<GroupUIState>
+        get() = _groupsUIState
+
+    init {
+        fetchGroups()
+    }
+
+    private fun fetchGroups() {
+        viewModelScope.launch {
+            groupsRepository.getAllGroups().collect { groups ->
+                _groupsUIState.value = GroupUIState(groups)
+            }
+        }
     }
 }
 
-data class GroupUIState(val groupList: List<Group> = listOf())
+data class GroupUIState(val groupList: List<Group> = emptyList())

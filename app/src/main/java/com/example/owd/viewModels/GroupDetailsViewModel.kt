@@ -30,7 +30,6 @@ class GroupDetailsViewModel(
 ) : ViewModel() {
 
     private var groupId: Long = 0
-    var displayBalances = false
 
     private var groupFlow = groupsRepository.getGroup(groupId.toInt())
         .filterNotNull()
@@ -59,7 +58,10 @@ class GroupDetailsViewModel(
             initialValue = emptyList()
         )
 
-    var _addExpenseUiState by mutableStateOf(AddExpenseUiState())
+    var addExpenseUiState by mutableStateOf(AddExpenseUiState())
+        private set
+
+    var displayBalancesChart by mutableStateOf(DetailUiState())
         private set
 
     var uiState: StateFlow<GroupDetailUiState> = combine(
@@ -127,7 +129,7 @@ class GroupDetailsViewModel(
             initialValue = GroupDetailUiState()
         ).also { uiState = it }
 
-        _addExpenseUiState = _addExpenseUiState.copy(
+        addExpenseUiState = addExpenseUiState.copy(
             expenseDetails = ExpenseDetails(personsExpense = uiState.value.members, groupId = groupId.toInt())
         )
 
@@ -135,7 +137,7 @@ class GroupDetailsViewModel(
     }
 
     fun updateUiState(expenseDetails: ExpenseDetails){
-        _addExpenseUiState = _addExpenseUiState.copy(expenseDetails = expenseDetails)
+        addExpenseUiState = addExpenseUiState.copy(expenseDetails = expenseDetails)
     }
 
     private fun validateInput(expenseDetails: ExpenseDetails): Boolean {
@@ -145,23 +147,23 @@ class GroupDetailsViewModel(
 
 
     fun updateAmount(amount: String) {
-        _addExpenseUiState = _addExpenseUiState.copy(
-            expenseDetails = _addExpenseUiState.expenseDetails.copy(amount = amount)
+        addExpenseUiState = addExpenseUiState.copy(
+            expenseDetails = addExpenseUiState.expenseDetails.copy(amount = amount)
         )
     }
 
     fun updateTitle(title: String) {
-        _addExpenseUiState = _addExpenseUiState.copy(
-            expenseDetails = _addExpenseUiState.expenseDetails.copy(name = title)
+        addExpenseUiState = addExpenseUiState.copy(
+            expenseDetails = addExpenseUiState.expenseDetails.copy(name = title)
         )
     }
 
     suspend fun saveExpense() {
-        if (validateInput(_addExpenseUiState.expenseDetails)) {
-            val expenseId = expenseRepository.insert(_addExpenseUiState.expenseDetails.toExpense())
-            _addExpenseUiState.expenseDetails.personsExpense.forEach {
-                var amount = _addExpenseUiState.expenseDetails.amount.toDouble() / _addExpenseUiState.expenseDetails.personsExpense.size
-                if (it.id.toInt() != _addExpenseUiState.expenseDetails.paidBy)
+        if (validateInput(addExpenseUiState.expenseDetails)) {
+            val expenseId = expenseRepository.insert(addExpenseUiState.expenseDetails.toExpense())
+            addExpenseUiState.expenseDetails.personsExpense.forEach {
+                var amount = addExpenseUiState.expenseDetails.amount.toDouble() / addExpenseUiState.expenseDetails.personsExpense.size
+                if (it.id.toInt() != addExpenseUiState.expenseDetails.paidBy)
                     amount = -amount
                 personExpenseRepository.insert(PersonExpense(personId = it.id, expenseId = expenseId, amount))
             }
@@ -169,14 +171,14 @@ class GroupDetailsViewModel(
     }
 
     fun updateSelectedMembers(selectedMembers: List<Person>) {
-        _addExpenseUiState = _addExpenseUiState.copy(
-            expenseDetails = _addExpenseUiState.expenseDetails.copy(personsExpense = selectedMembers)
+        addExpenseUiState = addExpenseUiState.copy(
+            expenseDetails = addExpenseUiState.expenseDetails.copy(personsExpense = selectedMembers)
         )
     }
 
     fun updatePayer(payer: Person) {
-        _addExpenseUiState = _addExpenseUiState.copy(
-            expenseDetails = _addExpenseUiState.expenseDetails.copy(paidBy = payer.id.toInt())
+        addExpenseUiState = addExpenseUiState.copy(
+            expenseDetails = addExpenseUiState.expenseDetails.copy(paidBy = payer.id.toInt())
         )
     }
 
@@ -187,7 +189,7 @@ class GroupDetailsViewModel(
     fun updateAmounts() {
         viewModelScope.launch {
             val amounts = getAmountsForMembers(uiState.value.members)
-            _addExpenseUiState = _addExpenseUiState.copy(amounts = amounts)
+            addExpenseUiState = addExpenseUiState.copy(amounts = amounts)
         }
     }
 
@@ -201,7 +203,7 @@ class GroupDetailsViewModel(
     }
 
     fun updateDisplayBalances(display: Boolean = true) {
-        displayBalances = display
+        displayBalancesChart = displayBalancesChart.copy(display = display)
     }
 
     companion object {
@@ -213,12 +215,17 @@ data class GroupDetailUiState(
     val group: Group = Group(0, "", ""),
     val expensesList: List<Expense> = emptyList(),
     val members: List<Person> = emptyList(),
+
 )
 
 data class AddExpenseUiState(
     val expenseDetails: ExpenseDetails = ExpenseDetails(),
     val amounts: List<Pair<Person, Float>> = emptyList(),
     val isEntryValid: Boolean = false
+)
+
+data class DetailUiState(
+    val display: Boolean = false
 )
 
 data class ExpenseDetails(

@@ -10,7 +10,6 @@ import com.example.owd.viewModels.GroupsViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
-        // Initializer for GroupsViewModel
         initializer {
             GroupsViewModel(owdApplication().container.groupsRepository)
         }
@@ -27,15 +26,6 @@ object AppViewModelProvider {
                 personsRepository = owdApplication().container.personsRepository
             )
         }
-
-//        initializer {
-//            AddExpenseViewModel(
-//                savedStateHandle = this.createSavedStateHandle(),
-//                groupsRepository = owdApplication().container.groupsRepository,
-//                expensesRepository = owdApplication().container.expensesRepository,
-//                personExpenseRepository = owdApplication().container.personExpenseRepository
-//            )
-//        }
     }
 }
 

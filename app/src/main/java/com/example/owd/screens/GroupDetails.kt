@@ -1,13 +1,11 @@
 package com.example.owd.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.coerceAtMost
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
@@ -58,9 +57,13 @@ import com.example.owd.R
 import com.example.owd.data.expenses.Expense
 import com.example.owd.data.persons.Person
 import com.example.owd.navigation.NavDest
+import com.example.owd.viewModels.GroupDetailUiState
 import com.example.owd.viewModels.GroupDetailsViewModel
 import kotlinx.coroutines.launch
 
+/**
+ * Represents the destination for the Group Details screen.
+ */
 object GroupDetailsDest : NavDest {
     override val route = "group_details"
     override val screenTitle = R.string.add_group
@@ -68,7 +71,12 @@ object GroupDetailsDest : NavDest {
     val routeWithArgs = "$route/{$groupId}"
 }
 
-@SuppressLint("CoroutineCreationDuringComposition")
+/**
+ * Composable function for displaying the Group Details screen.
+ * @param navigateToAddExpense Function to navigate to the Add Expense screen.
+ * @param navigateToHome Function to navigate to the Home screen.
+ * @param viewModel ViewModel for managing Group Details data.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupDetailScreen(
@@ -79,7 +87,6 @@ fun GroupDetailScreen(
     val uiState by viewModel.uiState.collectAsState()
     var menuExpanded by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-    var displayChart by remember { mutableStateOf(viewModel.displayBalances) }
 
     Scaffold(
         topBar = {
@@ -94,7 +101,7 @@ fun GroupDetailScreen(
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.headlineLarge
                     )
-                },
+                    },
                     actions = {
                         IconButton(onClick = { menuExpanded = !menuExpanded }) {
                             Icon(Icons.Filled.MoreVert, contentDescription = "More")
@@ -121,14 +128,14 @@ fun GroupDetailScreen(
                         .align(Alignment.CenterHorizontally),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    TextButton(onClick = { displayChart = false }) {
+                    TextButton(onClick = { viewModel.updateDisplayBalances(false) }) {
                         Text(
                             "Expenses",
                             fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
                             fontSize = 20.sp
                         )
                     }
-                    TextButton(onClick = { displayChart = true }) {
+                    TextButton(onClick = { viewModel.updateDisplayBalances(true) }) {
                         Text(
                             "Balances",
                             fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
@@ -153,24 +160,29 @@ fun GroupDetailScreen(
             }
         }
     ) {
-        if (displayChart) {
+        if (viewModel.displayBalancesChart.display) {
             viewModel.updateAmounts()
-            val list = viewModel._addExpenseUiState.amounts
+            val list = viewModel.addExpenseUiState.amounts
             if (list.isEmpty())
                 Text("No expenses yet")
             else
                 DisplayGraph(list, it)
 
         } else {
-            ExpenseScreen(it, viewModel)
+            ExpenseScreen(it,uiState, viewModel)
         }
     }
 }
 
+/**
+ * Composable function for displaying the list of expenses.
+ * @param contentPaddingValues Padding values for the content.
+ * @param uiState UI state containing group details.
+ * @param viewModel ViewModel for managing Group Details data.
+ */
 @Composable
-fun ExpenseScreen(contentPaddingValues: PaddingValues, viewModel: GroupDetailsViewModel)
+fun ExpenseScreen(contentPaddingValues: PaddingValues,uiState: GroupDetailUiState , viewModel: GroupDetailsViewModel)
 {
-    val uiState by viewModel.uiState.collectAsState()
     LazyColumn (contentPadding = contentPaddingValues) {
         items(uiState.expensesList) { expense ->
             val paidBy = uiState.members.find { it.id == expense.paidBy }?.name ?: ""
@@ -179,17 +191,24 @@ fun ExpenseScreen(contentPaddingValues: PaddingValues, viewModel: GroupDetailsVi
     }
 }
 
+/**
+ * Composable function for displaying the bar chart.
+ * @param data Data for the bar chart.
+ * @param paddingValues Padding values for the chart.
+ */
 @Composable
 fun DisplayGraph(data: List<Pair<Person, Float>>, paddingValues: PaddingValues)
 {
-    val heightPerMember = 50.dp
-    val graphHeight = (data.size * heightPerMember).coerceAtLeast(200.dp)
+    val heightPerMember = 60.dp
+    val graphHeight = (data.size * heightPerMember).coerceAtLeast(200.dp).coerceAtMost(700.dp)
+
 
     Box(modifier = Modifier
-        .fillMaxSize()
         .padding(paddingValues),
         contentAlignment = Alignment.TopCenter) {
-        val pointList = data.mapIndexed { index, pair -> Point(pair.second, index.toFloat()) }
+        val maxX = data.maxOf { Math.abs(it.second) }
+        val pointList = data.mapIndexed { index, pair -> Point(pair.second/maxX, index.toFloat()) }
+
 
         val barData = pointList.mapIndexed { index, point ->
             BarData(
@@ -219,6 +238,7 @@ fun DisplayGraph(data: List<Pair<Person, Float>>, paddingValues: PaddingValues)
             .labelData { index ->
                 """ ${data[index].first.name} 
                    ${Math.round(data[index].second * 100.0) / 100.0}€
+                   
                    """ }
             .setDataCategoryOptions(
                 DataCategoryOptions(
@@ -265,6 +285,11 @@ fun DisplayGraph(data: List<Pair<Person, Float>>, paddingValues: PaddingValues)
 }
 
 
+/**
+ * Composable function for displaying the details of an expense.
+ * @param expense Expense details.
+ * @param paidBy Name of the person who paid for the expense.
+ */
 @Composable
 fun DisplayExpenses(expense: Expense, paidBy: String)
 {
@@ -298,7 +323,7 @@ fun DisplayExpenses(expense: Expense, paidBy: String)
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(10.dp),
 
-                )
+                    )
 
             }
         }
