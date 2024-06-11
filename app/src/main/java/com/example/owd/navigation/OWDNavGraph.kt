@@ -98,7 +98,7 @@ fun OwdNavHost(
             AddExpenseScreen(
                 viewModel = groupsViewModel,
                 navigateBack = {
-                    navController.popBackStack("${GroupDetailsDest.route}/$groupId", false)
+                    navController.popBackStack("${GroupDetailsDest.route}/$groupId", true)
                     navController.navigate("${GroupDetailsDest.route}/$groupId")
                 }
             )

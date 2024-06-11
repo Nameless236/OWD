@@ -70,7 +70,7 @@ fun AddGroupScreen(
     Scaffold(
         topBar = { AddGroupTopBar() },
         floatingActionButton = { SaveGroupButton(viewModel, navigateBack, coroutineScope) },
-        modifier = modifier
+        modifier = modifier,
     ) { innerPadding ->
         GroupDetailsForm(viewModel, coroutineScope, Modifier.padding(innerPadding))
     }
@@ -107,8 +107,10 @@ fun SaveGroupButton(viewModel: AddGroupViewModel, navigateBack: () -> Unit, coro
     SmallFloatingActionButton(
         onClick = {
             coroutineScope.launch {
-                viewModel.saveItem()
-                navigateBack()
+                if (viewModel.validateInput(viewModel.groupUIState.groupDetails)) {
+                    viewModel.saveItem()
+                    navigateBack()
+                }
             }
         },
         containerColor = MaterialTheme.colorScheme.primaryContainer,

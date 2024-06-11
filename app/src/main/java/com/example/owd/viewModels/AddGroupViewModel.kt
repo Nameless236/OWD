@@ -30,11 +30,9 @@ class AddGroupViewModel(
      * Saves the new group to the database if the input is valid.
      */
     suspend fun saveItem() {
-        if (validateInput(groupUIState.groupDetails)) {
-            val id = groupsRepository.insert(groupUIState.groupDetails.toItem())
-            groupUIState.groupDetails.members.forEach { member ->
-                personsRepository.insert(Person(name = member, groupId = id))
-            }
+        val id = groupsRepository.insert(groupUIState.groupDetails.toItem())
+        groupUIState.groupDetails.members.forEach { member ->
+            personsRepository.insert(Person(name = member, groupId = id))
         }
     }
 
@@ -54,7 +52,7 @@ class AddGroupViewModel(
      * @param uiState UI state containing the group details.
      * @return `true` if the input is valid, `false` otherwise.
      */
-    private fun validateInput(uiState: GroupDetails): Boolean {
+    fun validateInput(uiState: GroupDetails): Boolean {
         return uiState.name.isNotBlank() && uiState.members.isNotEmpty()
     }
 

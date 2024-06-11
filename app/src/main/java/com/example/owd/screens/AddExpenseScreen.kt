@@ -90,8 +90,10 @@ fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit)
             SmallFloatingActionButton(
                 onClick = {
                     coroutineScope.launch {
-                        viewModel.saveExpense()
-                        navigateBack()
+                        if (viewModel.validateInput(viewModel.addExpenseUiState.expenseDetails)) {
+                            viewModel.saveExpense()
+                            navigateBack()
+                        }
                     }
 
                 },

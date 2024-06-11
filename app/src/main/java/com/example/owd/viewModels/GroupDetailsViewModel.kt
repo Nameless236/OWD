@@ -176,7 +176,7 @@ class GroupDetailsViewModel(
      * @param expenseDetails Details of the expense.
      * @return true if input is valid, false otherwise.
      */
-    private fun validateInput(expenseDetails: ExpenseDetails): Boolean {
+    fun validateInput(expenseDetails: ExpenseDetails): Boolean {
         return expenseDetails.amount.toDoubleOrNull() != null &&
                 expenseDetails.name != "" &&
                 expenseDetails.personsExpense.isNotEmpty() &&
@@ -211,23 +211,19 @@ class GroupDetailsViewModel(
      * @throws IllegalStateException if the input is not valid.
      */
     suspend fun saveExpense() {
-        if (validateInput(addExpenseUiState.expenseDetails)) {
-            val expenseId = expenseRepository.insert(addExpenseUiState.expenseDetails.toExpense())
-            addExpenseUiState.expenseDetails.personsExpense.forEach {
-                var amount =
+        val expenseId = expenseRepository.insert(addExpenseUiState.expenseDetails.toExpense())
+        addExpenseUiState.expenseDetails.personsExpense.forEach {
+            var amount =
                     addExpenseUiState.expenseDetails.amount.toDouble() / addExpenseUiState.expenseDetails.personsExpense.size
-                if (it.id.toInt() != addExpenseUiState.expenseDetails.paidBy)
-                    amount = -amount
-                personExpenseRepository.insert(
-                    PersonExpense(
-                        personId = it.id,
-                        expenseId = expenseId,
-                        amount
-                    )
+            if (it.id.toInt() != addExpenseUiState.expenseDetails.paidBy)
+                amount = -amount
+            personExpenseRepository.insert(
+                PersonExpense(
+                    personId = it.id,
+                    expenseId = expenseId,
+                    amount
                 )
-            }
-        } else {
-            throw IllegalStateException("Expense input is not valid.")
+            )
         }
     }
 
