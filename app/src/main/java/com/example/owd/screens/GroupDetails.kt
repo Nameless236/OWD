@@ -63,6 +63,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+/**
+ * Represents the destination for the group details screen.
+ */
 object GroupDetailsDest : NavDest {
     override val route = R.string.group_details_route.toString()
     override val screenTitle = R.string.group_details
@@ -70,6 +73,13 @@ object GroupDetailsDest : NavDest {
     val routeWithArgs = "$route/{$groupId}"
 }
 
+/**
+ * Composable function for displaying the group detail screen.
+ *
+ * @param navigateToAddExpense Callback function to navigate to the add expense screen.
+ * @param navigateToHome Callback function to navigate back to the home screen.
+ * @param viewModel ViewModel for managing the group details screen.
+ */
 @Composable
 fun GroupDetailScreen(
     navigateToAddExpense: () -> Unit,
@@ -80,6 +90,9 @@ fun GroupDetailScreen(
     var menuExpanded by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
+    /**
+     * Scaffold that provides material elements for the group detail screen layout.
+     */
     Scaffold(
         topBar = {
             TopBar(
@@ -93,7 +106,6 @@ fun GroupDetailScreen(
                         viewModel.deleteGroup()
                         navigateToHome()
                     }
-
                 }
             )
         },
@@ -111,6 +123,16 @@ fun GroupDetailScreen(
     }
 }
 
+
+/**
+ * Composable function for displaying the top app bar in the group detail screen.
+ *
+ * @param title The title to be displayed in the top app bar.
+ * @param menuExpanded Boolean value representing whether the menu is expanded or not.
+ * @param viewModel ViewModel for managing the group details screen.
+ * @param onMenuExpand Callback function to expand or collapse the menu.
+ * @param onDeleteGroup Callback function to delete the group.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
@@ -151,6 +173,11 @@ fun TopBar(
     }
 }
 
+/**
+ * Composable function for displaying action buttons in the group detail screen.
+ *
+ * @param viewModel ViewModel for managing the group details screen.
+ */
 @Composable
 fun ActionButtons(viewModel: GroupDetailsViewModel) {
     Row(
@@ -175,6 +202,11 @@ fun ActionButtons(viewModel: GroupDetailsViewModel) {
     }
 }
 
+/**
+ * Composable function for displaying the floating action button in the group detail screen.
+ *
+ * @param onClick Callback function to handle the click event of the button.
+ */
 @Composable
 fun ActionButton(onClick: () -> Unit) {
     SmallFloatingActionButton(
@@ -190,6 +222,14 @@ fun ActionButton(onClick: () -> Unit) {
     }
 }
 
+/**
+ * Composable function for displaying the list of expenses in the group detail screen.
+ *
+ * @param contentPaddingValues Padding values for the content.
+ * @param uiState UI state of the group detail screen.
+ * @param viewModel ViewModel for managing the group details screen.
+ * @param coroutineScope Coroutine scope for launching coroutines.
+ */
 @Composable
 fun ExpenseScreen(
     contentPaddingValues: PaddingValues,
@@ -205,6 +245,13 @@ fun ExpenseScreen(
     }
 }
 
+
+/**
+ * Composable function for displaying a bar chart graph.
+ *
+ * @param data List of pairs containing person and corresponding amount.
+ * @param paddingValues Padding values for the content.
+ */
 @Composable
 fun DisplayGraph(data: List<Pair<Person, Float>>, paddingValues: PaddingValues) {
     val heightPerMember = 60.dp
@@ -293,6 +340,14 @@ fun DisplayGraph(data: List<Pair<Person, Float>>, paddingValues: PaddingValues) 
     }
 }
 
+/**
+ * Composable function for displaying an expense card.
+ *
+ * @param expense Expense object to display.
+ * @param paidBy Name of the person who paid the expense.
+ * @param viewModel ViewModel for managing the group details screen.
+ * @param coroutineScope Coroutine scope for launching coroutines.
+ */
 @Composable
 fun ExpenseCard(expense: Expense, paidBy: String, viewModel: GroupDetailsViewModel, coroutineScope: CoroutineScope) {
     var menuExpanded by remember { mutableStateOf(false) }

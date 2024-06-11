@@ -21,6 +21,13 @@ import com.example.owd.screens.GroupsDest
 import com.example.owd.screens.MainScreen
 import com.example.owd.viewModels.GroupDetailsViewModel
 
+/**
+ * Composable function that represents the navigation host for the Owd app.
+ * It defines various destinations and their corresponding composable screens.
+ *
+ * @param navController The NavHostController used for navigation within the app.
+ * @param modifier Optional [Modifier] for configuring the layout behavior of the NavHost.
+ */
 @Composable
 fun OwdNavHost(
     navController: NavHostController,

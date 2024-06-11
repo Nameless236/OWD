@@ -55,9 +55,7 @@ class AddGroupViewModel(
      * @return `true` if the input is valid, `false` otherwise.
      */
     private fun validateInput(uiState: GroupDetails): Boolean {
-        return with(uiState) {
-            name.isNotBlank() && members.isNotEmpty()
-        }
+        return uiState.name.isNotBlank() && uiState.members.isNotEmpty()
     }
 
     /**

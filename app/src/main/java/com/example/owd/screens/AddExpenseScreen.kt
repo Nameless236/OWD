@@ -47,12 +47,21 @@ import com.example.owd.viewModels.AddExpenseUiState
 import com.example.owd.viewModels.GroupDetailsViewModel
 import kotlinx.coroutines.launch
 
+/**
+ * Represents the destination for adding an expense.
+ */
 object AddExpenseDest : NavDest {
     override val route = R.string.add_expense_route.toString()
     override val screenTitle = R.string.add_expense
     const val groupId = "groupId"
 }
 
+/**
+ * Composable function for displaying the screen for adding an expense.
+ *
+ * @param viewModel Instance of [GroupDetailsViewModel] used for managing UI state.
+ * @param navigateBack Callback function for navigating back to the previous screen.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit) {
@@ -116,6 +125,15 @@ fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit)
     }
 }
 
+/**
+ * Composable function representing the form for adding an expense.
+ *
+ * @param viewModel Instance of [GroupDetailsViewModel] used for managing UI state.
+ * @param members List of members in the group.
+ * @param uiState UI state for the add expense screen.
+ * @param expanded Whether the member selection dropdown is expanded.
+ * @param onExpandedChange Callback function for changing the expanded state.
+ */
 @Composable
 fun AddExpenseForm(viewModel: GroupDetailsViewModel,members:List<Person>, uiState: AddExpenseUiState, expanded: Boolean, onExpandedChange: (Boolean) -> Unit)
 {
@@ -123,7 +141,7 @@ fun AddExpenseForm(viewModel: GroupDetailsViewModel,members:List<Person>, uiStat
     ExpenseFormField(stringResource(id = R.string.amount), uiState.expenseDetails.amount, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Number)) { newValue ->
         if (newValue.all { it.isDigit() || it == '.' }) {
             viewModel.updateAmount(newValue) }
-        }
+    }
     Text(
         text = stringResource(id = R.string.paid_by),
         style = MaterialTheme.typography.headlineSmall,
@@ -140,6 +158,14 @@ fun AddExpenseForm(viewModel: GroupDetailsViewModel,members:List<Person>, uiStat
     )
 }
 
+/**
+ * Composable function for selecting the payer from the group members.
+ *
+ * @param viewModel Instance of [GroupDetailsViewModel] used for managing UI state.
+ * @param members List of members in the group.
+ * @param expanded Whether the dropdown menu is expanded.
+ * @param onExpandedChange Callback function for changing the expanded state.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MemberSelection(viewModel: GroupDetailsViewModel,members: List<Person>, expanded: Boolean, onExpandedChange: (Boolean) -> Unit)
@@ -174,6 +200,14 @@ fun MemberSelection(viewModel: GroupDetailsViewModel,members: List<Person>, expa
     }
 }
 
+/**
+ * Composable function representing a form field for expense details.
+ *
+ * @param label Label for the form field.
+ * @param value Current value of the form field.
+ * @param keyboardOptions Keyboard options for the text field.
+ * @param onValueChange Callback function for value change.
+ */
 @Composable
 fun ExpenseFormField(label: String, value: String, keyboardOptions: KeyboardOptions = KeyboardOptions.Default, onValueChange: (String) -> Unit)
 {
@@ -194,6 +228,13 @@ fun ExpenseFormField(label: String, value: String, keyboardOptions: KeyboardOpti
     )
 }
 
+/**
+ * Composable function representing a member in the group.
+ *
+ * @param member The member represented by this item.
+ * @param isSelected Whether the member is selected.
+ * @param onSelectionChange Callback function for selection change.
+ */
 @Composable
 fun Members(member: Person, isSelected: Boolean, onSelectionChange: (Boolean) -> Unit) {
     var checked by remember { mutableStateOf(isSelected) }

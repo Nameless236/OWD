@@ -8,16 +8,30 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel responsible for managing groups data.
+ *
+ * @property groupsRepository Repository for accessing groups data.
+ */
 class GroupsViewModel(private val groupsRepository: GroupsRepository) : ViewModel() {
     private val _groupsUIState = MutableStateFlow(GroupUIState())
 
+    /**
+     * Represents the state of groups UI.
+     */
     val groupsUIState: StateFlow<GroupUIState>
         get() = _groupsUIState
 
+    /**
+     * Initializes the ViewModel by fetching groups.
+     */
     init {
         fetchGroups()
     }
 
+    /**
+     * Fetches groups from the repository.
+     */
     private fun fetchGroups() {
         viewModelScope.launch {
             groupsRepository.getAllGroups().collect { groups ->
@@ -27,4 +41,9 @@ class GroupsViewModel(private val groupsRepository: GroupsRepository) : ViewMode
     }
 }
 
+/**
+ * Represents the UI state of groups.
+ *
+ * @property groupList List of groups.
+ */
 data class GroupUIState(val groupList: List<Group> = emptyList())

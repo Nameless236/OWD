@@ -51,6 +51,13 @@ object AddGroup : NavDest {
     override val screenTitle = R.string.add_group
 }
 
+/**
+ * Composable function for displaying the screen for adding a new group.
+ *
+ * @param navigateBack Callback function to navigate back.
+ * @param modifier Modifier for the layout.
+ * @param viewModel [AddGroupViewModel] instance used for managing UI state.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddGroupScreen(
@@ -69,6 +76,9 @@ fun AddGroupScreen(
     }
 }
 
+/**
+ * Composable function for the top app bar in the Add Group screen.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddGroupTopBar() {
@@ -85,6 +95,13 @@ fun AddGroupTopBar() {
     )
 }
 
+/**
+ * Composable function for the button to save the group in the Add Group screen.
+ *
+ * @param viewModel [AddGroupViewModel] instance used for managing UI state.
+ * @param navigateBack Callback function to navigate back.
+ * @param coroutineScope [CoroutineScope] instance used for launching coroutines.
+ */
 @Composable
 fun SaveGroupButton(viewModel: AddGroupViewModel, navigateBack: () -> Unit, coroutineScope: CoroutineScope) {
     SmallFloatingActionButton(
@@ -105,6 +122,13 @@ fun SaveGroupButton(viewModel: AddGroupViewModel, navigateBack: () -> Unit, coro
     }
 }
 
+/**
+ * Composable function for displaying the form for entering group details.
+ *
+ * @param viewModel [AddGroupViewModel] instance used for managing UI state.
+ * @param coroutineScope [CoroutineScope] instance used for launching coroutines.
+ * @param modifier Modifier for the layout.
+ */
 @Composable
 fun GroupDetailsForm(viewModel: AddGroupViewModel, coroutineScope: CoroutineScope, modifier: Modifier) {
     LazyColumn(modifier = modifier) {
@@ -136,6 +160,13 @@ fun GroupDetailsForm(viewModel: AddGroupViewModel, coroutineScope: CoroutineScop
     }
 }
 
+/**
+ * Composable function for a text field in the group details form.
+ *
+ * @param label Label for the text field.
+ * @param value Current value of the text field.
+ * @param onValueChange Callback function for value change.
+ */
 @Composable
 fun GroupDetailsTextField(label: String, value: String, onValueChange: (String) -> Unit) {
     Column(modifier = Modifier.padding(10.dp)) {
@@ -155,7 +186,12 @@ fun GroupDetailsTextField(label: String, value: String, onValueChange: (String) 
         )
     }
 }
-
+/**
+ * Composable function for displaying a card containing a text field and an icon button to add a new member.
+ *
+ * @param viewModel ViewModel for managing the add group screen.
+ * @param coroutineScope Coroutine scope for launching coroutines.
+ */
 @Composable
 fun NewMemberCard(viewModel: AddGroupViewModel, coroutineScope: CoroutineScope) {
     Card(modifier = Modifier.padding(10.dp), shape = RectangleShape) {
@@ -185,6 +221,11 @@ fun NewMemberCard(viewModel: AddGroupViewModel, coroutineScope: CoroutineScope) 
     }
 }
 
+/**
+ * Composable function for displaying a list item representing a group member.
+ *
+ * @param member Name of the group member.
+ */
 @Composable
 fun Members(member: String) {
     var checked by remember { mutableStateOf(true) }
