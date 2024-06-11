@@ -15,175 +15,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.example.compose.backgroundDark
-import com.example.compose.backgroundDarkHighContrast
-import com.example.compose.backgroundDarkMediumContrast
-import com.example.compose.backgroundLight
-import com.example.compose.backgroundLightHighContrast
-import com.example.compose.backgroundLightMediumContrast
-import com.example.compose.errorContainerDark
-import com.example.compose.errorContainerDarkHighContrast
-import com.example.compose.errorContainerDarkMediumContrast
-import com.example.compose.errorContainerLight
-import com.example.compose.errorContainerLightHighContrast
-import com.example.compose.errorContainerLightMediumContrast
-import com.example.compose.errorDark
-import com.example.compose.errorDarkHighContrast
-import com.example.compose.errorDarkMediumContrast
-import com.example.compose.errorLight
-import com.example.compose.errorLightHighContrast
-import com.example.compose.errorLightMediumContrast
-import com.example.compose.inverseOnSurfaceDark
-import com.example.compose.inverseOnSurfaceDarkHighContrast
-import com.example.compose.inverseOnSurfaceDarkMediumContrast
-import com.example.compose.inverseOnSurfaceLight
-import com.example.compose.inverseOnSurfaceLightHighContrast
-import com.example.compose.inverseOnSurfaceLightMediumContrast
-import com.example.compose.inversePrimaryDark
-import com.example.compose.inversePrimaryDarkHighContrast
-import com.example.compose.inversePrimaryDarkMediumContrast
-import com.example.compose.inversePrimaryLight
-import com.example.compose.inversePrimaryLightHighContrast
-import com.example.compose.inversePrimaryLightMediumContrast
-import com.example.compose.inverseSurfaceDark
-import com.example.compose.inverseSurfaceDarkHighContrast
-import com.example.compose.inverseSurfaceDarkMediumContrast
-import com.example.compose.inverseSurfaceLight
-import com.example.compose.inverseSurfaceLightHighContrast
-import com.example.compose.inverseSurfaceLightMediumContrast
-import com.example.compose.onBackgroundDark
-import com.example.compose.onBackgroundDarkHighContrast
-import com.example.compose.onBackgroundDarkMediumContrast
-import com.example.compose.onBackgroundLight
-import com.example.compose.onBackgroundLightHighContrast
-import com.example.compose.onBackgroundLightMediumContrast
-import com.example.compose.onErrorContainerDark
-import com.example.compose.onErrorContainerDarkHighContrast
-import com.example.compose.onErrorContainerDarkMediumContrast
-import com.example.compose.onErrorContainerLight
-import com.example.compose.onErrorContainerLightHighContrast
-import com.example.compose.onErrorContainerLightMediumContrast
-import com.example.compose.onErrorDark
-import com.example.compose.onErrorDarkHighContrast
-import com.example.compose.onErrorDarkMediumContrast
-import com.example.compose.onErrorLight
-import com.example.compose.onErrorLightHighContrast
-import com.example.compose.onErrorLightMediumContrast
-import com.example.compose.onPrimaryContainerDark
-import com.example.compose.onPrimaryContainerDarkHighContrast
-import com.example.compose.onPrimaryContainerDarkMediumContrast
-import com.example.compose.onPrimaryContainerLight
-import com.example.compose.onPrimaryContainerLightHighContrast
-import com.example.compose.onPrimaryContainerLightMediumContrast
-import com.example.compose.onPrimaryDark
-import com.example.compose.onPrimaryDarkHighContrast
-import com.example.compose.onPrimaryDarkMediumContrast
-import com.example.compose.onPrimaryLight
-import com.example.compose.onPrimaryLightHighContrast
-import com.example.compose.onPrimaryLightMediumContrast
-import com.example.compose.onSecondaryContainerDark
-import com.example.compose.onSecondaryContainerDarkHighContrast
-import com.example.compose.onSecondaryContainerDarkMediumContrast
-import com.example.compose.onSecondaryContainerLight
-import com.example.compose.onSecondaryContainerLightHighContrast
-import com.example.compose.onSecondaryContainerLightMediumContrast
-import com.example.compose.onSecondaryDark
-import com.example.compose.onSecondaryDarkHighContrast
-import com.example.compose.onSecondaryDarkMediumContrast
-import com.example.compose.onSecondaryLight
-import com.example.compose.onSecondaryLightHighContrast
-import com.example.compose.onSecondaryLightMediumContrast
-import com.example.compose.onSurfaceDark
-import com.example.compose.onSurfaceDarkHighContrast
-import com.example.compose.onSurfaceDarkMediumContrast
-import com.example.compose.onSurfaceLight
-import com.example.compose.onSurfaceLightHighContrast
-import com.example.compose.onSurfaceLightMediumContrast
-import com.example.compose.onSurfaceVariantDark
-import com.example.compose.onSurfaceVariantDarkHighContrast
-import com.example.compose.onSurfaceVariantDarkMediumContrast
-import com.example.compose.onSurfaceVariantLight
-import com.example.compose.onSurfaceVariantLightHighContrast
-import com.example.compose.onSurfaceVariantLightMediumContrast
-import com.example.compose.onTertiaryContainerDark
-import com.example.compose.onTertiaryContainerDarkHighContrast
-import com.example.compose.onTertiaryContainerDarkMediumContrast
-import com.example.compose.onTertiaryContainerLight
-import com.example.compose.onTertiaryContainerLightHighContrast
-import com.example.compose.onTertiaryContainerLightMediumContrast
-import com.example.compose.onTertiaryDark
-import com.example.compose.onTertiaryDarkHighContrast
-import com.example.compose.onTertiaryDarkMediumContrast
-import com.example.compose.onTertiaryLight
-import com.example.compose.onTertiaryLightHighContrast
-import com.example.compose.onTertiaryLightMediumContrast
-import com.example.compose.outlineDark
-import com.example.compose.outlineDarkHighContrast
-import com.example.compose.outlineDarkMediumContrast
-import com.example.compose.outlineLight
-import com.example.compose.outlineLightHighContrast
-import com.example.compose.outlineLightMediumContrast
-import com.example.compose.outlineVariantDark
-import com.example.compose.outlineVariantDarkHighContrast
-import com.example.compose.outlineVariantDarkMediumContrast
-import com.example.compose.outlineVariantLight
-import com.example.compose.outlineVariantLightHighContrast
-import com.example.compose.outlineVariantLightMediumContrast
-import com.example.compose.primaryContainerDark
-import com.example.compose.primaryContainerDarkHighContrast
-import com.example.compose.primaryContainerDarkMediumContrast
-import com.example.compose.primaryContainerLight
-import com.example.compose.primaryContainerLightHighContrast
-import com.example.compose.primaryContainerLightMediumContrast
-import com.example.compose.primaryDark
-import com.example.compose.primaryDarkHighContrast
-import com.example.compose.primaryDarkMediumContrast
-import com.example.compose.primaryLight
-import com.example.compose.primaryLightHighContrast
-import com.example.compose.primaryLightMediumContrast
-import com.example.compose.scrimDark
-import com.example.compose.scrimDarkHighContrast
-import com.example.compose.scrimDarkMediumContrast
-import com.example.compose.scrimLight
-import com.example.compose.scrimLightHighContrast
-import com.example.compose.scrimLightMediumContrast
-import com.example.compose.secondaryContainerDark
-import com.example.compose.secondaryContainerDarkHighContrast
-import com.example.compose.secondaryContainerDarkMediumContrast
-import com.example.compose.secondaryContainerLight
-import com.example.compose.secondaryContainerLightHighContrast
-import com.example.compose.secondaryContainerLightMediumContrast
-import com.example.compose.secondaryDark
-import com.example.compose.secondaryDarkHighContrast
-import com.example.compose.secondaryDarkMediumContrast
-import com.example.compose.secondaryLight
-import com.example.compose.secondaryLightHighContrast
-import com.example.compose.secondaryLightMediumContrast
-import com.example.compose.surfaceDark
-import com.example.compose.surfaceDarkHighContrast
-import com.example.compose.surfaceDarkMediumContrast
-import com.example.compose.surfaceLight
-import com.example.compose.surfaceLightHighContrast
-import com.example.compose.surfaceLightMediumContrast
-import com.example.compose.surfaceVariantDark
-import com.example.compose.surfaceVariantDarkHighContrast
-import com.example.compose.surfaceVariantDarkMediumContrast
-import com.example.compose.surfaceVariantLight
-import com.example.compose.surfaceVariantLightHighContrast
-import com.example.compose.surfaceVariantLightMediumContrast
-import com.example.compose.tertiaryContainerDark
-import com.example.compose.tertiaryContainerDarkHighContrast
-import com.example.compose.tertiaryContainerDarkMediumContrast
-import com.example.compose.tertiaryContainerLight
-import com.example.compose.tertiaryContainerLightHighContrast
-import com.example.compose.tertiaryContainerLightMediumContrast
-import com.example.compose.tertiaryDark
-import com.example.compose.tertiaryDarkHighContrast
-import com.example.compose.tertiaryDarkMediumContrast
-import com.example.compose.tertiaryLight
-import com.example.compose.tertiaryLightHighContrast
-import com.example.compose.tertiaryLightMediumContrast
-import com.example.ui.theme.AppTypography
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -214,13 +45,6 @@ private val lightScheme = lightColorScheme(
     inverseSurface = inverseSurfaceLight,
     inverseOnSurface = inverseOnSurfaceLight,
     inversePrimary = inversePrimaryLight,
-//    surfaceDim = surfaceDimLight,
-//    surfaceBright = surfaceBrightLight,
-//    surfaceContainerLowest = surfaceContainerLowestLight,
-//    surfaceContainerLow = surfaceContainerLowLight,
-//    surfaceContainer = surfaceContainerLight,
-//    surfaceContainerHigh = surfaceContainerHighLight,
-//    surfaceContainerHighest = surfaceContainerHighestLight,
 )
 
 private val darkScheme = darkColorScheme(
@@ -252,13 +76,6 @@ private val darkScheme = darkColorScheme(
     inverseSurface = inverseSurfaceDark,
     inverseOnSurface = inverseOnSurfaceDark,
     inversePrimary = inversePrimaryDark,
-//    surfaceDim = surfaceDimDark,
-//    surfaceBright = surfaceBrightDark,
-//    surfaceContainerLowest = surfaceContainerLowestDark,
-//    surfaceContainerLow = surfaceContainerLowDark,
-//    surfaceContainer = surfaceContainerDark,
-//    surfaceContainerHigh = surfaceContainerHighDark,
-//    surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
 private val mediumContrastLightColorScheme = lightColorScheme(
@@ -290,13 +107,6 @@ private val mediumContrastLightColorScheme = lightColorScheme(
     inverseSurface = inverseSurfaceLightMediumContrast,
     inverseOnSurface = inverseOnSurfaceLightMediumContrast,
     inversePrimary = inversePrimaryLightMediumContrast,
-//    surfaceDim = surfaceDimLightMediumContrast,
-//    surfaceBright = surfaceBrightLightMediumContrast,
-//    surfaceContainerLowest = surfaceContainerLowestLightMediumContrast,
-//    surfaceContainerLow = surfaceContainerLowLightMediumContrast,
-//    surfaceContainer = surfaceContainerLightMediumContrast,
-//    surfaceContainerHigh = surfaceContainerHighLightMediumContrast,
-//    surfaceContainerHighest = surfaceContainerHighestLightMediumContrast,
 )
 
 private val highContrastLightColorScheme = lightColorScheme(
@@ -328,13 +138,6 @@ private val highContrastLightColorScheme = lightColorScheme(
     inverseSurface = inverseSurfaceLightHighContrast,
     inverseOnSurface = inverseOnSurfaceLightHighContrast,
     inversePrimary = inversePrimaryLightHighContrast,
-//    surfaceDim = surfaceDimLightHighContrast,
-//    surfaceBright = surfaceBrightLightHighContrast,
-//    surfaceContainerLowest = surfaceContainerLowestLightHighContrast,
-//    surfaceContainerLow = surfaceContainerLowLightHighContrast,
-//    surfaceContainer = surfaceContainerLightHighContrast,
-//    surfaceContainerHigh = surfaceContainerHighLightHighContrast,
-//    surfaceContainerHighest = surfaceContainerHighestLightHighContrast,
 )
 
 private val mediumContrastDarkColorScheme = darkColorScheme(
@@ -366,13 +169,6 @@ private val mediumContrastDarkColorScheme = darkColorScheme(
     inverseSurface = inverseSurfaceDarkMediumContrast,
     inverseOnSurface = inverseOnSurfaceDarkMediumContrast,
     inversePrimary = inversePrimaryDarkMediumContrast,
-//    surfaceDim = surfaceDimDarkMediumContrast,
-//    surfaceBright = surfaceBrightDarkMediumContrast,
-//    surfaceContainerLowest = surfaceContainerLowestDarkMediumContrast,
-//    surfaceContainerLow = surfaceContainerLowDarkMediumContrast,
-//    surfaceContainer = surfaceContainerDarkMediumContrast,
-//    surfaceContainerHigh = surfaceContainerHighDarkMediumContrast,
-//    surfaceContainerHighest = surfaceContainerHighestDarkMediumContrast,
 )
 
 private val highContrastDarkColorScheme = darkColorScheme(
@@ -404,13 +200,6 @@ private val highContrastDarkColorScheme = darkColorScheme(
     inverseSurface = inverseSurfaceDarkHighContrast,
     inverseOnSurface = inverseOnSurfaceDarkHighContrast,
     inversePrimary = inversePrimaryDarkHighContrast,
-//    surfaceDim = surfaceDimDarkHighContrast,
-//    surfaceBright = surfaceBrightDarkHighContrast,
-//    surfaceContainerLowest = surfaceContainerLowestDarkHighContrast,
-//    surfaceContainerLow = surfaceContainerLowDarkHighContrast,
-//    surfaceContainer = surfaceContainerDarkHighContrast,
-//    surfaceContainerHigh = surfaceContainerHighDarkHighContrast,
-//    surfaceContainerHighest = surfaceContainerHighestDarkHighContrast,
 )
 
 @Immutable
@@ -432,28 +221,28 @@ fun OWDTheme(
     dynamicColor: Boolean = false,
     content: @Composable() () -> Unit
 ) {
-  val colorScheme = when {
-      dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-          val context = LocalContext.current
-          if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-      }
-      
-      darkTheme -> darkScheme
-      else -> lightScheme
-  }
-  val view = LocalView.current
-  if (!view.isInEditMode) {
-    SideEffect {
-      val window = (view.context as Activity).window
-      window.statusBarColor = colorScheme.primary.toArgb()
-      WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-    }
-  }
+    val colorScheme = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
 
-  MaterialTheme(
-    colorScheme = colorScheme,
-    typography = AppTypography,
-    content = content
-  )
+        darkTheme -> darkScheme
+        else -> lightScheme
+    }
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = colorScheme.primary.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+        }
+    }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = AppTypography,
+        content = content
+    )
 }
 

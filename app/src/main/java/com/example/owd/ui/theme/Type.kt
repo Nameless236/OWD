@@ -1,4 +1,4 @@
-package com.example.ui.theme
+package com.example.owd.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.FontFamily
@@ -14,14 +14,14 @@ val provider = GoogleFont.Provider(
 
 val bodyFontFamily = FontFamily(
     Font(
-        googleFont = GoogleFont("Radio Canada"),
+        googleFont = GoogleFont("Fragment Mono"),
         fontProvider = provider,
     )
 )
 
 val displayFontFamily = FontFamily(
     Font(
-        googleFont = GoogleFont("Radio Canada"),
+        googleFont = GoogleFont("Fragment Mono"),
         fontProvider = provider,
     )
 )
