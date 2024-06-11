@@ -303,6 +303,7 @@ class GroupDetailsViewModel(
     suspend fun deleteExpense(expense: Expense) {
         expenseRepository.delete(expense)
     }
+}
 
     /**
      * UI state representing the details of a group.
@@ -370,4 +371,3 @@ class GroupDetailsViewModel(
         groupId = groupId.toLong(),
         paidBy = paidBy.toLong()
     )
-}

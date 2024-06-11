@@ -135,7 +135,7 @@ fun AddExpenseScreen(viewModel: GroupDetailsViewModel, navigateBack: () -> Unit)
  * @param onExpandedChange Callback function for changing the expanded state.
  */
 @Composable
-fun AddExpenseForm(viewModel: GroupDetailsViewModel,members:List<Person>, uiState: AddExpenseUiState, expanded: Boolean, onExpandedChange: (Boolean) -> Unit)
+fun AddExpenseForm(viewModel: GroupDetailsViewModel, members:List<Person>, uiState: AddExpenseUiState, expanded: Boolean, onExpandedChange: (Boolean) -> Unit)
 {
     ExpenseFormField(stringResource(id = R.string.title), uiState.expenseDetails.name, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)) { viewModel.updateTitle(it) }
     ExpenseFormField(stringResource(id = R.string.amount), uiState.expenseDetails.amount, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Number)) { newValue ->
